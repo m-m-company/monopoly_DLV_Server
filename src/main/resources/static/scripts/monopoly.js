@@ -2303,6 +2303,12 @@ function land(increasedRent) {
 				buy();
 			}
 		} else {
+			//TODO: AJAX CALL BUY OR NOT BUY
+			//TODO: SUCCESS: buy() if dlv return buy
+			//TODO: AJAX CALL MANAGE
+			//TODO: SUCCESS: sellHouse(1..42) or //REFACTOR $("#buyHouseButton").click() or $("#mortgagebutton").click()
+			//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
+			// game.proposeTrade()
 			document.getElementById("landed").innerHTML = "<div>You landed on <a href='javascript:void(0);' onmouseover='showdeed(" + p.position + ");' onmouseout='hidedeed();' class='statscellcolor'>" + s.name + "</a>.<input type='button' onclick='buy();' value='Buy ($" + s.price + ")' title='Buy " + s.name + " for " + s.pricetext + ".'/></div>";
 		}
 
@@ -2536,6 +2542,8 @@ function roll() {
 
 function play() {
 	if (game.auction()) {
+		//TODO: AJAX CALL bid or not bid
+		//TODO: Success: $("#bid").val(DLV_Response) and game.auctionBid(val) or game.auctionpass()
 		return;
 	}
 
