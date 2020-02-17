@@ -1103,7 +1103,6 @@ function Game() {
 	};
 
 }
-
 var game;
 
 
@@ -1119,6 +1118,7 @@ function Player(name, color) {
 	this.chanceJailCard = false;
 	this.bidding = true;
 	this.human = true;
+	this.dlv = this.name === "DlvPlayer";
 	// this.AI = null;
 
 	this.pay = function (amount, creditor) {
@@ -2305,6 +2305,16 @@ function land(increasedRent) {
 		} else {
 			//TODO: AJAX CALL BUY OR NOT BUY
 			//TODO: SUCCESS: buy() if dlv return buy
+			$.ajax({
+				type: 'GET',
+				data: {
+					playersArray: JSON.stringify(player.filter((p) => p.name!=="")),
+					cost: s.price
+				},
+				url: '/buyOrNotBuy',
+				success: (data) => console.log(data),
+				async: false
+			});
 			//TODO: AJAX CALL MANAGE
 			//TODO: SUCCESS: sellHouse(1..42) or //REFACTOR $("#buyHouseButton").click() or $("#mortgagebutton").click()
 			//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
@@ -2633,6 +2643,8 @@ function setup() {
 
 		if (document.getElementById("player" + i + "ai").value === "0") {
 			p.name = document.getElementById("player" + i + "name").value;
+			if (p.name === "DlvPlayer")
+				p.dlv = true;
 			p.human = true;
 		} else if (document.getElementById("player" + i + "ai").value === "1") {
 			p.human = false;
