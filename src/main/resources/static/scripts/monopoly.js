@@ -2303,22 +2303,44 @@ function land(increasedRent) {
 				buy();
 			}
 		} else {
-			//TODO: AJAX CALL BUY OR NOT BUY
-			//TODO: SUCCESS: buy() if dlv return buy
 			$.ajax({
 				type: 'GET',
+				url: '/buyOrNotBuy',
 				data: {
 					playersArray: JSON.stringify(player.filter((p) => p.name!=="")),
 					cost: s.price
 				},
-				url: '/buyOrNotBuy',
-				success: (data) => console.log(data),
+				success: function (data) {
+					console.log(data);
+					//TODO: In base alla risposta clicco su buy o no
+				},
 				async: false
 			});
-			//TODO: AJAX CALL MANAGE
-			//TODO: SUCCESS: sellHouse(1..42) or //REFACTOR $("#buyHouseButton").click() or $("#mortgagebutton").click()
-			//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
-			// game.proposeTrade()
+			$.ajax({
+				type: "GET",
+				url: "/manage",
+				data: {
+					//TODO: Vanno mandate tutte le proprietà possedute e ciò che puoi fare su di esse
+				},
+				success: function (data) {
+					console.log(data);
+					//TODO: Viene effettuata un'operazione su una/più proprietà o si passa il turno
+					//TODO: SUCCESS: sellHouse(1..42) or //REFACTOR $("#buyHouseButton").click() or $("#mortgagebutton").click()
+				},
+				async: false
+			});
+			$.ajax({
+				type: "GET",
+				url: "/trade",
+				data: {
+					//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
+					// game.proposeTrade()
+				},
+				success: function (data) {
+					console.log(data);
+					//TODO: trade
+				}
+			});
 			document.getElementById("landed").innerHTML = "<div>You landed on <a href='javascript:void(0);' onmouseover='showdeed(" + p.position + ");' onmouseout='hidedeed();' class='statscellcolor'>" + s.name + "</a>.<input type='button' onclick='buy();' value='Buy ($" + s.price + ")' title='Buy " + s.name + " for " + s.pricetext + ".'/></div>";
 		}
 
@@ -2552,8 +2574,17 @@ function roll() {
 
 function play() {
 	if (game.auction()) {
-		//TODO: AJAX CALL bid or not bid
-		//TODO: Success: $("#bid").val(DLV_Response) and game.auctionBid(val) or game.auctionpass()
+		$.ajax({
+			type: "GET",
+			url: "/auction",
+			data: {
+				//TODO: Vanno passati denaro, proprietà in questione, offerta più alta, valore reale, ecc.
+			},
+			success: function (data) {
+				console.log(data);
+				//TODO: Success: $("#bid").val(DLV_Response) and game.auctionBid(val) or game.auctionpass()
+			}
+		});
 		return;
 	}
 

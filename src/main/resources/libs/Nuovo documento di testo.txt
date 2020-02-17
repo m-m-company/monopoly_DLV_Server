@@ -1,2 +1,0 @@
-player(ciao, 1, 2, true);
-isThereAplayer(Y) :- player(Y,_,_,X), X = true.
