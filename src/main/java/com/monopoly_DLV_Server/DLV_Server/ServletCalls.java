@@ -1,7 +1,8 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.IsThereAplayer;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Price;
+import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
+import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,24 +20,23 @@ import java.util.Objects;
 @Slf4j //Questa genera una variabile 'log'
 public class ServletCalls {
 
-    private ArrayList<Player> generatePlayers(String players){
+    @GetMapping(value = "/buyOrNotBuy")
+    public String buyOrNotBuy(String playerJson, String propertyJson, String number){
         ObjectMapper objectMapper = new ObjectMapper();
+        Player player = null;
+        Property property = null;
         try {
-            //E' così complicato solo perché voglio usare un ArrayList, con Player[] è molto più semplice ma poi dovremmo usarlo come un array semplice
-            // Player[] array = objectMapper.readValue(players, Player[].class);
-            return objectMapper.readValue(players,
-                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, Player.class));
+            player = objectMapper.readValue(playerJson, Player.class);
+            property = objectMapper.readValue(propertyJson, Property.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    @GetMapping(value = "/buyOrNotBuy")
-    public String buyOrNotBuy(String playersArray, Integer cost){
-        ArrayList<Player> gamers = generatePlayers(playersArray);
-        ArrayList<Object> facts = new ArrayList<>(Objects.requireNonNull(gamers));
-        facts.add(new Price(cost));
+        assert player != null;
+        assert property != null;
+        ArrayList<Object> facts = new ArrayList<>();
+        facts.add(player);
+        facts.add(property);
+        facts.add(new Number(number));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
         IsThereAplayer is = null;
         for (AnswerSet a: answerSets){
@@ -50,6 +50,7 @@ public class ServletCalls {
                 e.printStackTrace();
             }
         }
+        assert is != null;
         return is.getName();
     }
 

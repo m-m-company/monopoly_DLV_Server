@@ -2280,6 +2280,16 @@ function unmortgage(index) {
 }
 
 
+function getPropertyWithSameColor(player, color) {
+	var count = 0;
+	for (var i = 0; i < 40; ++i){
+		if (square[i].owner === player && square[i].color === color){
+			++count;
+		}
+	}
+	return count;
+}
+
 function land(increasedRent) {
 	increasedRent = !!increasedRent; // Cast increasedRent to a boolean value. It is used for the ADVANCE TO THE NEAREST RAILROAD/UTILITY Chance cards.
 
@@ -2303,12 +2313,16 @@ function land(increasedRent) {
 				buy();
 			}
 		} else {
+			console.log(JSON.stringify(p));
+			console.log(JSON.stringify(s));
+			console.log(getPropertyWithSameColor(turn, s.color));
 			$.ajax({
 				type: 'GET',
 				url: '/buyOrNotBuy',
 				data: {
-					playersArray: JSON.stringify(player.filter((p) => p.name!=="")),
-					cost: s.price
+					playerJson: JSON.stringify(p),
+					propertyJson: JSON.stringify(s),
+					number: getPropertyWithSameColor(turn, s.color)
 				},
 				success: function (data) {
 					console.log(data);

@@ -2,12 +2,16 @@ package com.monopoly_DLV_Server.DLV_Server.DTO;
 
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 //Questa annotazione genera: Getter, Setter, ToString, Equals, Hashcode e il costruttore con tutti
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Id("player")
 public class Player {
 	@Param(0)
