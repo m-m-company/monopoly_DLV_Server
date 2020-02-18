@@ -2290,6 +2290,26 @@ function getPropertyWithSameColor(player, color) {
 	return count;
 }
 
+function getProperties(player) {
+	var properties = [];
+	for (var i = 0; i < 40; ++i){
+		if (square[i].owner === player){
+			properties.push(square[i]);
+		}
+	}
+	return properties;
+}
+
+function getOwnedProperties() {
+	var properties = [];
+	for (var i = 0; i < 40; ++i){
+		if (square[i].owner > 0){
+			properties.push(square[i]);
+		}
+	}
+	return properties;
+}
+
 function land(increasedRent) {
 	increasedRent = !!increasedRent; // Cast increasedRent to a boolean value. It is used for the ADVANCE TO THE NEAREST RAILROAD/UTILITY Chance cards.
 
@@ -2334,7 +2354,7 @@ function land(increasedRent) {
 				type: "GET",
 				url: "/manage",
 				data: {
-					//TODO: Vanno mandate tutte le proprietà possedute e ciò che puoi fare su di esse
+					propertiesJson: JSON.stringify(getProperties(turn))
 				},
 				success: function (data) {
 					console.log(data);
@@ -2345,14 +2365,15 @@ function land(increasedRent) {
 			});
 			$.ajax({
 				type: "GET",
-				url: "/trade",
+				url: "/proposeTrade",
 				data: {
-					//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
-					// game.proposeTrade()
+					playersJson: JSON.stringify(player),
+					propertiesJson: JSON.stringify(getOwnedProperties())
 				},
 				success: function (data) {
 					console.log(data);
-					//TODO: trade
+					//TODO: Trade: $("#trade-leftp-money").val(dlv), $("#trade-rightp-money").val(dlv),
+					// game.proposeTrade()
 				}
 			});
 			document.getElementById("landed").innerHTML = "<div>You landed on <a href='javascript:void(0);' onmouseover='showdeed(" + p.position + ");' onmouseout='hidedeed();' class='statscellcolor'>" + s.name + "</a>.<input type='button' onclick='buy();' value='Buy ($" + s.price + ")' title='Buy " + s.name + " for " + s.pricetext + ".'/></div>";

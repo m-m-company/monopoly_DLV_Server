@@ -1,1 +1,0 @@
-isThereAplayer(Y) :- player(Y,_,_,_,X), X = "true".
