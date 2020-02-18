@@ -14,12 +14,17 @@ import it.unical.mat.embasp.languages.asp.AnswerSet;
 import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 public class DLVHandler {
-
+    private static String pathToExe = null;
     private static DLVHandler instance = null;
+    private static final String pathToEncodings = "src/main/resources/encodings/";
     private Handler handler;
     private InputProgram facts;
     private InputProgram encoding;
@@ -38,8 +43,27 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(Price.class);
     }
 
+    private void setPathToExe(){
+        if (DLVHandler.pathToExe == null) {
+            //Cannot do this on constructor 'cause File(".") doesn't exist, java reasons
+            StringBuilder path = new StringBuilder(new File(".").getAbsolutePath());
+            path.deleteCharAt(path.indexOf("."));
+            pathToExe = path + File.separator + "src" + File.separator + "main" +
+                    File.separator + "resources" + File.separator + "libs" + File.separator + "dlv2.win.x64_5";
+        }
+    }
+
+    public List<AnswerSet> startGuess(Collection<Object> facts, String encoding){
+        this.setEncoding(DLVHandler.pathToEncodings+encoding);
+        for (Object obj : facts)
+            this.addFact(obj);
+        this.addFactsToHandler();
+        return this.getAnswerSets();
+    }
+
     private DLVHandler(){
-        handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\mlori\\Desktop\\monopoly_DLV_Server\\src\\main\\resources\\libs\\dlv2.win.x64_5"));
+        setPathToExe();
+        handler = new DesktopHandler(new DLV2DesktopService(DLVHandler.pathToExe));
         facts = new ASPInputProgram();
         try {
             registerClasses();
@@ -49,7 +73,7 @@ public class DLVHandler {
         encoding = new ASPInputProgram();
     }
 
-    public void addFact(Object object){
+    private void addFact(Object object){
         try {
             facts.addObjectInput(object);
         } catch (Exception e) {
@@ -57,11 +81,11 @@ public class DLVHandler {
         }
     }
 
-    public void addFactsToHandler(){
+    private void addFactsToHandler(){
         handler.addProgram(facts);
     }
 
-    public void setEncoding(String path){
+    private void setEncoding(String path){
         facts.clearAll();
         handler.removeAll();
         encoding.clearAll();
@@ -69,7 +93,7 @@ public class DLVHandler {
         handler.addProgram(encoding);
     }
 
-    public List<AnswerSet> getAnswerSets(){
+    private List<AnswerSet> getAnswerSets(){
         Output o = handler.startSync();
         AnswerSets answerSets = (AnswerSets) o;
         return answerSets.getAnswersets();

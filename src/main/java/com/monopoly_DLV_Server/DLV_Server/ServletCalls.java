@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Slf4j //Questa genera una variabile 'log'
@@ -33,15 +34,10 @@ public class ServletCalls {
 
     @GetMapping(value = "/buyOrNotBuy")
     public String buyOrNotBuy(String playersArray, Integer cost){
-        DLVHandler.getInstance().setEncoding("src/main/resources/encodings/buyOrNotBuy.dlv");
-        DLVHandler.getInstance().addFact(new Price(cost));
         ArrayList<Player> gamers = generatePlayers(playersArray);
-        gamers.forEach(gamer -> {
-            log.error(gamer.toString());
-            DLVHandler.getInstance().addFact(gamer);
-        });
-        DLVHandler.getInstance().addFactsToHandler();
-        List<AnswerSet> answerSets = DLVHandler.getInstance().getAnswerSets();
+        ArrayList<Object> facts = new ArrayList<>(Objects.requireNonNull(gamers));
+        facts.add(new Price(cost));
+        List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
         IsThereAplayer is = null;
         for (AnswerSet a: answerSets){
             try {
