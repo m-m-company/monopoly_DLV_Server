@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Id("propertyNumberWithSameColor")
 public class Number {
-    String number;
+    private Integer number;
 }

@@ -1,5 +1,6 @@
 package com.monopoly_DLV_Server.DLV_Server.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Id("player")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
 	@Param(0)
    	String name;

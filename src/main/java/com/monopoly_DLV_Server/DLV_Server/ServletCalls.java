@@ -1,31 +1,42 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
+import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Player;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Slf4j //Questa genera una variabile 'log'
+@Slf4j
 public class ServletCalls {
 
     @GetMapping(value = "/buyOrNotBuy")
-    public String buyOrNotBuy(String playerJson, String propertyJson, String number) {
+    public String buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameColour) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
         ArrayList<Object> facts = new ArrayList<>();
         facts.add(player);
         facts.add(property);
-        facts.add(new Number(number));
+        facts.add(new Number(numberOfTheSameColour));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
-        return "buyOrNotBuyResponse";
+        for (AnswerSet a:
+             answerSets) {
+            for (Object o : a.getAtoms()){
+                if (o instanceof BooleanValue){
+                   return ((BooleanValue) o).getBooleanValue();
+                }
+            }
+        }
+        return "false";
     }
 
     @GetMapping(value = "/manage")

@@ -1,0 +1,5 @@
+% player(name, actualPosition, actualMoney, jail, dlv).
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent).
+% number(numberOfTheSameColour)
+
+booleanValue(X) :- player(_,_,Y,_,_), property(_,_,_,_,_,_,Z,_), Y>Z, X = "true".
