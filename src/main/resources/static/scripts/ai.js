@@ -221,7 +221,7 @@ function AIDlv2(p) {
 	// Arguments:
 	// index: the property's index (0-39).
 	this.buyProperty = function(index) {
-		let returnValue = "false";
+		let returnValue = false;
 		$.ajax({
 			type: 'GET',
 			url: '/buyOrNotBuy',

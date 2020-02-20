@@ -20,7 +20,7 @@ import java.util.List;
 public class ServletCalls {
 
     @GetMapping(value = "/buyOrNotBuy")
-    public String buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameColour) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Boolean buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameColour) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
         Number number = new Number(numberOfTheSameColour);
@@ -32,13 +32,14 @@ public class ServletCalls {
         for (AnswerSet a:
              answerSets) {
             for (Object o : a.getAtoms()){
+                log.error("Object: "+o.toString());
                 if (o instanceof BooleanValue){
                     log.error(((BooleanValue) o).getBooleanValue());
-                   return ((BooleanValue) o).getBooleanValue();
+                   return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
                 }
             }
         }
-        return "false";
+        return false;
     }
 
     @GetMapping(value = "/manage")

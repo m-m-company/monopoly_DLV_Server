@@ -2327,12 +2327,9 @@ function land(increasedRent) {
 
     // Allow player to buy the property on which he landed.
     if (s.price !== 0 && s.owner === 0) {
-        console.log("HUMAN:" + p.human);
         if (!p.human) {
             let x = p.AI.buyProperty(p.position);
-            console.log(x);
-            if (x != "false") {
-                console.log("If: "+ p.AI.buyProperty(p.position));
+            if (x == true) {
                 buy();
             }
         } else {

@@ -4,6 +4,6 @@
 
 limitMoney(500).
 
-booleanValue("true") :- player(_,_,ActualMoney,_,_), property(_,_,_,_,_,_,Price,_), ActualMoney>Price.
-booleanValue("false") :- player(_,_,ActualMoney,_,_), property(_,_,_,_,_,_,Price,_), ActualMoney<Price.
-:- limitMoney(Limit), player(_,_,ActualMoney,_,_), ActualMoney < Limit, number(SameColor), SameColor < 1, booleanValue("true").
+booleanValue(true) :- player(_,_,ActualMoney,_,_), property(_,_,_,_,_,_,Price,_), ActualMoney>Price.
+booleanValue(false) :- player(_,_,ActualMoney,_,_), property(_,_,_,_,_,_,Price,_), ActualMoney<Price.
+:- limitMoney(Limit), player(_,_,ActualMoney,_,_), ActualMoney < Limit, number(SameColor), SameColor < 1, booleanValue(true).
