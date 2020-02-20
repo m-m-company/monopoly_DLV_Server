@@ -231,7 +231,6 @@ function AIDlv2(p) {
 				numberOfTheSameColour: getPropertyWithSameColor(turn, square[index].color)
 			},
 			success: function (value) {
-				console.log("Return value: "+ value);
 				returnValue = value;
 			},
 			async: false

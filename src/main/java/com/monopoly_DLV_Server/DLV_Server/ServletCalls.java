@@ -34,7 +34,6 @@ public class ServletCalls {
             for (Object o : a.getAtoms()){
                 log.error("Object: "+o.toString());
                 if (o instanceof BooleanValue){
-                    log.error(((BooleanValue) o).getBooleanValue());
                    return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
                 }
             }
