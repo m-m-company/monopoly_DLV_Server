@@ -1,5 +1,6 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
+import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Player;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
@@ -36,11 +37,11 @@ public class DLVHandler {
         return instance;
     }
 
-    //TODO: Is it really needed?
     private void registerClasses() throws ObjectNotValidException, IllegalAnnotationException {
         ASPMapper.getInstance().registerClass(Player.class);
         ASPMapper.getInstance().registerClass(Property.class);
         ASPMapper.getInstance().registerClass(Number.class);
+        ASPMapper.getInstance().registerClass(BooleanValue.class);
     }
 
     private void setPathToExe(){

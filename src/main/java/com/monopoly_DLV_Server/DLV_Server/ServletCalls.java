@@ -23,15 +23,17 @@ public class ServletCalls {
     public String buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameColour) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
+        Number number = new Number(numberOfTheSameColour);
         ArrayList<Object> facts = new ArrayList<>();
         facts.add(player);
         facts.add(property);
-        facts.add(new Number(numberOfTheSameColour));
+        facts.add(number);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
         for (AnswerSet a:
              answerSets) {
             for (Object o : a.getAtoms()){
                 if (o instanceof BooleanValue){
+                    log.error(((BooleanValue) o).getBooleanValue());
                    return ((BooleanValue) o).getBooleanValue();
                 }
             }

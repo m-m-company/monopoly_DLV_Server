@@ -221,7 +221,7 @@ function AIDlv2(p) {
 	// Arguments:
 	// index: the property's index (0-39).
 	this.buyProperty = function(index) {
-		let returnValue = false;
+		let returnValue = "false";
 		$.ajax({
 			type: 'GET',
 			url: '/buyOrNotBuy',
@@ -231,6 +231,7 @@ function AIDlv2(p) {
 				numberOfTheSameColour: getPropertyWithSameColor(turn, square[index].color)
 			},
 			success: function (value) {
+				console.log("Return value: "+ value);
 				returnValue = value;
 			},
 			async: false
@@ -243,8 +244,6 @@ function AIDlv2(p) {
 	// Arguments:
 	// tradeObj: the proposed trade, an instanceof Trade, has the AI as the recipient.
 	this.acceptTrade = function(tradeObj) {
-		console.log("acceptTrade");
-
 		var tradeValue = 0;
 		var money = tradeObj.getMoney();
 		var initiator = tradeObj.getInitiator();
@@ -278,7 +277,6 @@ function AIDlv2(p) {
 	// This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
 	// Return: boolean: Must return true if and only if the AI proposed a trade.
 	this.beforeTurn = function() {
-		console.log("beforeTurn");
 		var s;
 		var allGroupOwned;
 		var max;
@@ -349,7 +347,6 @@ function AIDlv2(p) {
 	// This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
 	// Return: boolean: Must return true if and only if the AI proposed a trade.
 	this.onLand = function() {
-		console.log("onLand");
 		var proposedTrade;
 		var property = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		var railroadIndexes = [5, 15, 25, 35];
@@ -390,7 +387,6 @@ function AIDlv2(p) {
 	// Determine whether to post bail/use get out of jail free card (if in possession).
 	// Return: boolean: true to post bail/use card.
 	this.postBail = function() {
-		console.log("postBail");
 
 		// p.jailroll === 2 on third turn in jail.
 		if ((p.communityChestJailCard || p.chanceJailCard) && p.jailroll === 2) {
@@ -403,7 +399,6 @@ function AIDlv2(p) {
 	// Mortgage enough properties to pay debt.
 	// Return: void: don't return anything, just call the functions mortgage()/sellhouse()
 	this.payDebt = function() {
-		console.log("payDebt");
 		$.ajax({
 			type: 'GET',
 			url: '/mortage',
@@ -433,7 +428,6 @@ function AIDlv2(p) {
 	// Determine what to bid during an auction.
 	// Return: integer: -1 for exit auction, 0 for pass, a positive value for the bid.
 	this.bid = function(property, currentBid) {
-		console.log("bid");
 		var bid;
 		$.ajax({
 			type: "GET",

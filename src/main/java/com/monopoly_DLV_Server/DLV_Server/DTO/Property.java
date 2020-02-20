@@ -23,13 +23,13 @@ public class Property {
 	private String mortgage = "false";
 	@Param(3)
 	private Integer house = 0;
-	@Param(3)
-	private Integer hotel = 0;
 	@Param(4)
-	private Integer groupNumber = 0;
+	private Integer hotel = 0;
 	@Param(5)
-	private Integer price;
+	private Integer groupNumber = 0;
 	@Param(6)
+	private Integer price;
+	@Param(7)
 	private Integer baserent = 0;
 	private Integer rent1 = 0;
 	private Integer rent2 = 0;
