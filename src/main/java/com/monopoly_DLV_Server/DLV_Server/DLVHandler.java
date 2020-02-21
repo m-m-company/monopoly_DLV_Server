@@ -1,9 +1,7 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
-import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Player;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -42,6 +40,7 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(Property.class);
         ASPMapper.getInstance().registerClass(Number.class);
         ASPMapper.getInstance().registerClass(BooleanValue.class);
+        ASPMapper.getInstance().registerClass(BuyHouse.class);
     }
 
     private void setPathToExe(){

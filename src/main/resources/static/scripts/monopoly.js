@@ -2281,10 +2281,10 @@ function unmortgage(index) {
 }
 
 
-function getPropertyWithSameColor(player, color) {
+function getPropertyWithSameColor(player, group) {
     let count = 0;
     for (let i = 0; i < 40; ++i) {
-        if (square[i].owner === player && square[i].color === color) {
+        if (square[i].owner === player && square[i].groupNumber === group) {
             ++count;
         }
     }
@@ -2335,7 +2335,7 @@ function land(increasedRent) {
         } else {
             console.log(JSON.stringify(p));
             console.log(JSON.stringify(s));
-            console.log(getPropertyWithSameColor(turn, s.color));
+            console.log(getPropertyWithSameColor(turn, s.groupNumber));
 
 
             document.getElementById("landed").innerHTML = "<div>You landed on <a href='javascript:void(0);' onmouseover='showdeed(" + p.position + ");' onmouseout='hidedeed();' class='statscellcolor'>" + s.name + "</a>.<input type='button' onclick='buy();' value='Buy ($" + s.price + ")' title='Buy " + s.name + " for " + s.pricetext + ".'/></div>";

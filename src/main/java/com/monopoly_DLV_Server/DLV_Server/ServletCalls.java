@@ -1,9 +1,7 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
-import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Player;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +18,10 @@ import java.util.List;
 public class ServletCalls {
 
     @GetMapping(value = "/buyOrNotBuy")
-    public Boolean buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameColour) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Boolean buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameGroup) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
-        Number number = new Number(numberOfTheSameColour);
+        Number number = new Number(numberOfTheSameGroup);
         ArrayList<Object> facts = new ArrayList<>();
         facts.add(player);
         facts.add(property);
@@ -32,7 +30,6 @@ public class ServletCalls {
         for (AnswerSet a:
              answerSets) {
             for (Object o : a.getAtoms()){
-                log.error("Object: "+o.toString());
                 if (o instanceof BooleanValue){
                    return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
                 }
@@ -42,10 +39,25 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/manage")
-    public String manage(String propertiesJson) {
+    public ArrayList<BuyHouse> manage(String propertiesJson, String playerJson) {
+        log.error(propertiesJson);
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        facts.add(JsonConverter.getInstance().getObject(playerJson, Player.class));
+        ArrayList<BuyHouse> as = new ArrayList<>();
+        log.info(String.valueOf(facts));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "manage.dlv");
-        return "manageResponse";
+        log.error("ASS: "+ String.valueOf(answerSets));
+        for (AnswerSet a : answerSets){
+            try {
+                for (Object o : a.getAtoms()){
+                    if (o instanceof BuyHouse)
+                        as.add((BuyHouse) o);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return as;
     }
 
     @GetMapping(value = "/proposeTrade")

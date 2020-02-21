@@ -37,4 +37,6 @@ public class Property {
 	private Integer rent4 = 0;
 	private Integer rent5 = 0;
 	private Integer landcount;
+	@Param(8)
+	private Integer index = 0;
 }
