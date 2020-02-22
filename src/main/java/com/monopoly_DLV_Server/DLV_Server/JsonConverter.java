@@ -40,4 +40,13 @@ public class JsonConverter {
         return null;
     }
 
+    public String toJson(Object object){
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
