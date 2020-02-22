@@ -228,7 +228,7 @@ function AIDlv2(p) {
 			data: {
 				playerJson: JSON.stringify(p),
 				propertyJson: JSON.stringify(square[index]),
-				numberOfTheSameColour: getPropertyWithSameColor(turn, square[index].color)
+				numberOfTheSameGroup: getPropertyWithSameColor(turn, square[index].color)
 			},
 			success: function (value) {
 				returnValue = value;
@@ -276,26 +276,24 @@ function AIDlv2(p) {
 	// This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
 	// Return: boolean: Must return true if and only if the AI proposed a trade.
 	this.beforeTurn = function() {
-		var s;
-		var allGroupOwned;
-		var max;
-		var leastHouseProperty;
-		var leastHouseNumber;
 		$.ajax({
 			type: "GET",
 			url: "/manage",
 			data: {
-				propertiesJson: JSON.stringify(getProperties(turn))
+				propertiesJson: JSON.stringify(getProperties(turn)),
+				playerJson: JSON.stringify(p)
 			},
 			success: function (data) {
-				console.log(data);
+				data.map((house) => {
+					buyHouse(house.index);
+				})
 				//TODO: Viene effettuata un'operazione su una/più proprietà
 				//TODO: SUCCESS: buyHouse(index); e unmortgage. Sopra c'è scrtto che puoi fare anche un trade ma qui non lo fa mai
 			},
 			async: false
 		});
 		// Buy houses.
-		for (var i = 0; i < 40; i++) {
+		/*for (var i = 0; i < 40; i++) {
 			s = square[i];
 
 			if (s.owner === p.index && s.groupNumber >= 3) {
@@ -336,7 +334,7 @@ function AIDlv2(p) {
 				unmortgage(i);
 			}
 		}
-
+*/
 		return false;
 	}
 
