@@ -283,12 +283,24 @@ function AIDlv2(p) {
 				propertiesJson: JSON.stringify(getProperties(turn)),
 				playerJson: JSON.stringify(p)
 			},
-			success: function (data) {
+			success: (data) => {
 				data.map((house) => {
 					buyHouse(house.index);
 				})
 				//TODO: Viene effettuata un'operazione su una/più proprietà
 				//TODO: SUCCESS: buyHouse(index); e unmortgage. Sopra c'è scrtto che puoi fare anche un trade ma qui non lo fa mai
+			},
+			async: false
+		});
+		$.ajax({
+			type: "GET",
+			url: "/unmortgage",
+			data: {
+				propertiesJson: JSON.stringify(getProperties(turn)),
+				money: p.money
+			},
+			success: (data) =>{
+
 			},
 			async: false
 		});

@@ -3,6 +3,7 @@ package com.monopoly_DLV_Server.DLV_Server;
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,6 +68,14 @@ public class ServletCalls {
         facts.addAll(properties);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "proposeTrade.dlv");
         return "proposeTradeResponse";
+    }
+
+    @GetMapping(value = "/unmortgage")
+    public ArrayList<Object> unmortgage(String propertiesJson, Integer money){
+        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        facts.add(new Number(money));
+        List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "unmortgage.dlv");
+        return null;
     }
 
     @GetMapping(value = "/auction")
