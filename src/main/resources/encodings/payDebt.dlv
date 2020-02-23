@@ -1,0 +1,77 @@
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
+% number(actualMoney)
+% reach(moneyToReach)
+
+groupNumberOfProperty(0,12).
+groupNumberOfProperty(1,4).
+groupNumberOfProperty(2,2).
+groupNumberOfProperty(3,2).
+groupNumberOfProperty(4,3).
+groupNumberOfProperty(5,3).
+groupNumberOfProperty(6,3).
+groupNumberOfProperty(7,3).
+groupNumberOfProperty(8,3).
+groupNumberOfProperty(9,3).
+groupNumberOfProperty(10,2).
+
+groupHousePrice(0,0).
+groupHousePrice(1,0).
+groupHousePrice(2,0).
+groupHousePrice(3,50).
+groupHousePrice(4,50).
+groupHousePrice(5,100).
+groupHousePrice(6,100).
+groupHousePrice(7,150).
+groupHousePrice(8,150).
+groupHousePrice(9,200).
+groupHousePrice(10,200).
+
+moneyEarned(0).
+
+propertyHouse(PROPERTY, NUMBER) :- property(_,_,_,NUMBER,_,_,_,_,PROPERTY).
+sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,"false",_,_,G,_,_,PROP)} = N.
+propertyAction(P,"sellHouse",N) | notPropertyAction(P,"sellHouse", N) :- propertyHouse(P,N), N > 0.
+propertyAction(P,"sellProp")  | notPropertyAction(P,"sellProp") :- property(_,_,"false",_,_,_,_,_,P), propertyHouse(P, 0).
+propertyHouse(PROPERTY, NUMBER) :- propertyAction(PROPERTY, "sellHouse", N), propertyHouse(PROPERTY, N), NUMBER = N-1, NUMBER>=0. 
+moneyEarnedFromHouse(MONEY) :- #sum{P, N, PROPERTY: propertyAction(PROPERTY, "sellHouse",N), property(_,_,_,_,_,GROUP,_,_,PROPERTY), groupHousePrice(GROUP,PRICE), P = PRICE/2} = MONEY.
+moneyEarnedFromProperty(MONEY) :- #sum{P, PROPERTY: propertyAction(PROPERTY, "sellProp"), property(_,_,_,_,_,_,PRICE,_,PROPERTY), P = PRICE/2} = MONEY.
+moneyEarned(MONEY) :- moneyEarnedFromHouse(M1), moneyEarnedFromProperty(M2), MONEY = M1 + M2.
+:- actualMoney(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, reach(M2), ACTUAL+M1 < M2.
+:- actualMoney(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, reach(M2), ACTUAL+M1 > M2+200.
+minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LEV.
+%:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1 >= LEVEL2, LEVEL1 - LEVEL2 > 1.
+%:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, L1), minLev(PROP2, L2), L1-L2 > 1.
+%:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, L1), minLev(PROP2, L2), L1-L2 < -1.
+
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,1,_,_,P). [1@4, P]
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,2,_,_,P). [1@4, P]
+:~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@3]
+:~ propertyAction(P,"sellHouse",_), minLev(P,L). [L@2, P]
+:~ propertyAction(P,"sellProp"). [1@1, P]
+
+
+diff(GROUP, D) :- property(_,GROUP,_,_,PROP1), property(_,GROUP,_,_,PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1>=LEVEL2, D=LEVEL1-LEVEL2.
+:- diff(GROUP,D), D>1.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TEST CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
+% property(mortgage,house, groupNumber, price, arrayIndex).
+% number(actualMoney)
+% reach(moneyToReach)
+number(50).
+reach(200).
+property("true", 0, 0, 50, 1).
+property("false", 0, 1, 100, 2).
+property("false", 0, 2, 100, 3).
+property("false", 4, 3, 50, 4). 
+property("false", 4, 3, 50, 5). 
+
+property("false", 4, 5, 50, 6). 
+property("false", 3, 5, 50, 7).
+property("false", 3, 5, 50, 8). 
+
+property("false", 0, 10, 50, 9).
+property("false", 0, 0, 100, 10).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EXCEPTED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

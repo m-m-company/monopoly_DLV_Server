@@ -3,10 +3,8 @@ package com.monopoly_DLV_Server.DLV_Server;
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
-import it.unical.mat.embasp.languages.asp.AnswerSets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -45,9 +43,7 @@ public class ServletCalls {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(JsonConverter.getInstance().getObject(playerJson, Player.class));
         ArrayList<BuyHouse> as = new ArrayList<>();
-        log.info(String.valueOf(facts));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "manage.dlv");
-        log.error("ASS: "+ String.valueOf(answerSets));
         for (AnswerSet a : answerSets){
             try {
                 for (Object o : a.getAtoms()){
@@ -71,10 +67,27 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/unmortgage")
-    public ArrayList<Object> unmortgage(String propertiesJson, Integer money){
+    public ArrayList<Integer> unmortgage(String propertiesJson, Integer money){
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(new Number(money));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "unmortgage.dlv");
+        ArrayList<Integer> unmortgages = new ArrayList<>();
+        for (AnswerSet a:answerSets) {
+            try {
+                for (Object o: a.getAtoms()) {
+                    if (o instanceof Unmortgage)
+                        unmortgages.add(((Unmortgage) o).getIndex());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return unmortgages;
+        }
+        return null;
+    }
+
+    @GetMapping(value = "/payDebt")
+    public ArrayList<Object> payDebt(String propertiesJson, Integer playerJson){
         return null;
     }
 

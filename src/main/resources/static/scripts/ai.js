@@ -300,7 +300,7 @@ function AIDlv2(p) {
 				money: p.money
 			},
 			success: (data) =>{
-
+				data.forEach(i => unmortgage(i));
 			},
 			async: false
 		});
@@ -410,7 +410,7 @@ function AIDlv2(p) {
 	this.payDebt = function() {
 		$.ajax({
 			type: 'GET',
-			url: '/mortage',
+			url: '/payDebt',
 			data: {
 				squareJson: JSON.stringify(square),
 				actualMoney: p.money //Should be at least -1
