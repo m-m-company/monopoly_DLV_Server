@@ -15,6 +15,15 @@ public class BuyOrNotBuyTests {
     ServletCalls servlet = new ServletCalls();
 
     @Test
+    public void reachable(){
+        try {
+            Assert.assertNull(servlet.buyOrNotBuy(null,null,null));
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void buyWithSameColor() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Player player = new Player("name", "color", 0, 300, 0, 0, "jail", 0, false, false, false, false, "dlv");
         Property property = new Property("name", "color", 0, "mortgage", 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0);

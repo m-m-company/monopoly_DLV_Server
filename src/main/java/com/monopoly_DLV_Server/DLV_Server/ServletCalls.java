@@ -18,6 +18,8 @@ public class ServletCalls {
 
     @GetMapping(value = "/buyOrNotBuy")
     public Boolean buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameGroup) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        if (playerJson == null || propertyJson == null || numberOfTheSameGroup == null)
+            return null;
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
         Number number = new Number(numberOfTheSameGroup);
@@ -88,7 +90,9 @@ public class ServletCalls {
 
     @GetMapping(value = "/payDebt")
     public ArrayList<Object> payDebt(String propertiesJson, Integer playerJson){
-        return null;
+        if (propertiesJson == null || playerJson == null)
+            return null;
+        return new ArrayList<>();
     }
 
     @GetMapping(value = "/auction")
