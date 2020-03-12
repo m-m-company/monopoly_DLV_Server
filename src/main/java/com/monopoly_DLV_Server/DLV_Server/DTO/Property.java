@@ -16,7 +16,6 @@ import lombok.ToString;
 public class Property {
 	@Param(0)
 	private String name;
-	private String color;
 	@Param(1)
 	private Integer owner = 0;
 	@Param(2)
@@ -31,12 +30,6 @@ public class Property {
 	private Integer price;
 	@Param(7)
 	private Integer baserent = 0;
-	private Integer rent1 = 0;
-	private Integer rent2 = 0;
-	private Integer rent3 = 0;
-	private Integer rent4 = 0;
-	private Integer rent5 = 0;
-	private Integer landcount;
 	@Param(8)
 	private Integer index = 0;
 }

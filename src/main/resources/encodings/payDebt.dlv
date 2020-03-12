@@ -43,10 +43,11 @@ minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LE
 %:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, L1), minLev(PROP2, L2), L1-L2 > 1.
 %:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, L1), minLev(PROP2, L2), L1-L2 < -1.
 
-:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,1,_,_,P). [1@4, P]
-:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,2,_,_,P). [1@4, P]
-:~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@3]
-:~ #max{L1: minLev(_,L1)} = LMAX, #min{L2: minLev(_,L2)} = LMIN, L = LMAX-LMIN. [L@2]
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,1,_,_,P). [1@5, P]
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,2,_,_,P). [1@5, P]
+:~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@4]
+:~ #max{L1: minLev(_,L1)} = LMAX, #min{L2: minLev(_,L2)} = LMIN, L = LMAX-LMIN. [L@3]
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,_,_,B,P). [B@2, P]
 :~ propertyAction(P,"sellProp"). [1@1, P]
 
 

@@ -12,10 +12,4 @@ public class StartGame {
     public String startGame(){
         return "index";
     }
-    @GetMapping("/provaOggetto")
-    public String provaOggetto(ProvaDTO prova){
-        System.out.println(prova.ciao);
-        System.out.println(prova.c);
-        return "index";
-    }
 }

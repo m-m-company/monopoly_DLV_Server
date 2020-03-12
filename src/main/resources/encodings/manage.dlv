@@ -25,7 +25,7 @@ groupHousePrice(9,200).
 groupHousePrice(10,200).
 spentMoney(0).
 
-limitMoney(MONEY) :- player(_,_,A,_,_), MONEY = A/3 . %Max 30% actual
+limitMoney(MONEY) :- player(_,_,A,_,_), MONEY = A/3 . %Max 33% actual
 
 canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,_,_,_,_,GROUP,_,_,P)} = NUMBER.
 
@@ -34,6 +34,6 @@ groupLevel(GROUP,LEVEL) :- buyHouse(PROP, L), property(_,_,_,HOUSE,_,GROUP,_,_,P
 buyHouse(PROP,LEVEL) | notBuyHouse(PROP,LEVEL) :- property(_,_,_,HOUSE,_,GROUP,_,_,PROP), canBuyHouse(GROUP), groupLevel(GROUP,LEVEL), HOUSE < 5, HOUSE = LEVEL.
 buyHouse(PROP,LEVEL) | notBuyHouse(PROP, LEVEL) :- buyHouse(PROP,OLD), property(_,_,_,_,_,GROUP,_,_,PROP), groupLevel(GROUP,OLD), OLD < 5, OLD + 1 = LEVEL.
 spentMoney(MONEY) :- #sum{X, PROP, LEV: buyHouse(PROP,LEV), property(_,_,_,_,_,G,_,_,PROP), groupHousePrice(G, X)} = MONEY.
-:- notBuyHouse(PROP, LEVEL), buyHouse(_, Y), LEVEL + 1 = Y.
+%:- notBuyHouse(PROP, LEVEL), buyHouse(_, Y), LEVEL + 1 = Y.
 :- limitMoney(MONEY), #max{SPENT: spentMoney(SPENT)} = SPENTMONEY, MONEY < SPENTMONEY.
 :~ notBuyHouse(PROP,_). [1@1, PROP]

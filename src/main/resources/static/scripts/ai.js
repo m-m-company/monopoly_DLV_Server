@@ -242,7 +242,7 @@ function AIDlv2(p) {
 	// Return: boolean/instanceof Trade: a valid Trade object to counter offer (with the AI as the recipient); false to decline; true to accept.
 	// Arguments:
 	// tradeObj: the proposed trade, an instanceof Trade, has the AI as the recipient.
-	this.acceptTrade = function(tradeObj) {
+	this.acceptTrade = function(tradeObj) {  //TODO: Ajax call
 		var tradeValue = 0;
 		var money = tradeObj.getMoney();
 		var initiator = tradeObj.getInitiator();
@@ -287,8 +287,6 @@ function AIDlv2(p) {
 				data.map((house) => {
 					buyHouse(house.index);
 				})
-				//TODO: Viene effettuata un'operazione su una/più proprietà
-				//TODO: SUCCESS: buyHouse(index); e unmortgage. Sopra c'è scrtto che puoi fare anche un trade ma qui non lo fa mai
 			},
 			async: false
 		});
@@ -355,7 +353,7 @@ function AIDlv2(p) {
 
 	// This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
 	// Return: boolean: Must return true if and only if the AI proposed a trade.
-	this.onLand = function() {
+	this.onLand = function() { //TODO: capire che fa
 		var proposedTrade;
 		var property = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		var railroadIndexes = [5, 15, 25, 35];
@@ -395,7 +393,7 @@ function AIDlv2(p) {
 
 	// Determine whether to post bail/use get out of jail free card (if in possession).
 	// Return: boolean: true to post bail/use card.
-	this.postBail = function() {
+	this.postBail = function() { //TODO: Ajax call
 
 		// p.jailroll === 2 on third turn in jail.
 		if ((p.communityChestJailCard || p.chanceJailCard) && p.jailroll === 2) {

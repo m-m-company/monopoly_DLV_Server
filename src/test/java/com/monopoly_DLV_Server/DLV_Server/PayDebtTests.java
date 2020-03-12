@@ -9,8 +9,4 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class PayDebtTests {
     ServletCalls servletCalls = new ServletCalls();
 
-    @Test
-    public void reachable(){
-        Assert.assertNull(servletCalls.payDebt(null, null));
-    }
 }
