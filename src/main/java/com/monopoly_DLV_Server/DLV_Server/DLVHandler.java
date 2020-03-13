@@ -42,6 +42,7 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(BooleanValue.class);
         ASPMapper.getInstance().registerClass(BuyHouse.class);
         ASPMapper.getInstance().registerClass(Unmortgage.class);
+        ASPMapper.getInstance().registerClass(ActionProperty.class);
     }
 
     private void setPathToExe(){

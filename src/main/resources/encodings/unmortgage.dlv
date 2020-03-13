@@ -1,29 +1,12 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
 % number(actualMONEY)
 
-limitMoney(MONEY) :- number(MONEY), MONEY = A/5 . %Max 20% actual
+limitMoney(MONEY) :- number(A), MONEY = A/5 . %Max 20% actual
+bestGroup(1). bestGroup(2).
 
 sameGroup(PROP, N) :- property(_,_,"true", _,_ ,GROUP, _,_,PROP), #count{P2: property(_,_,_,_,_,GROUP,_,_,P2), P2 != PROP} = N.
 unmortgage(PROP) | notUnmortgage(PROP) :- property(_,_,"true",_,_,_,_,_,PROP).
-:- limitMoney(MONEY), MONEY < #sum{P, PROP: unmortgage(PROP), property(_,_,_,_,_,_,PRICE,_,PROP), PRICE/(6/10) = P}.
+adjustedProperty(PRICE,PROP) :- unmortgage(PROP), property(_,_,_,_,_,_,P,_,PROP), PRICE = P*6.
+:- limitMoney(MONEY), MONEY < #sum{P, PROP: adjustedProperty(PRICE,PROP), PRICE/10 = P}.
+:~ notUnmortgage(PROP), property(_,_,_,_,_,GROUP,_,_,PROP), bestGroup(GROUP). [1@2, PROP]
 :~ notUnmortgage(PROP), sameGroup(PROP, N). [N@1]
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TEST CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%number(1000).
-%property(a,b,"true",c,d,1,100,f,1).
-%property(a,b,"false",c,d,1,200,f,2).
-%property(a,b,"true",c,d,1,300,f,3).
-%property(a,b,"true",c,d,2,400,f,4).
-%
-%limitMoney(MONEY) :- number(MONEY), MONEY = A/5 . %Max 20% actual
-%
-%sameGroup(PROP, N) :- property(_,_,"true", _,_ ,GROUP, _,_,PROP), #count{P2: property(_,_,_,_,_,GROUP,_,_,P2), P2 != PROP} = N.
-%unmortgage(PROP) | notUnmortgage(PROP) :- property(_,_,"true",_,_,_,_,_,PROP).
-%:- limitMoney(MONEY), MONEY < #sum{P, PROP: unmortgage(PROP), property(_,_,_,_,_,_,PRICE,_,PROP), PRICE/(6/10) = P}.
-%:~ notUnmortgage(PROP), sameGroup(PROP, N). [N@1]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EXPECTED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%unmortgage(3). unmortgage(1). notUnmortgage(4).
-%COST 0@1

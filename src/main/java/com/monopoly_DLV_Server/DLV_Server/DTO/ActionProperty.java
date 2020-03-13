@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Id("unmortgage")
-public class Unmortgage {
+@Id("actionProperty")
+public class ActionProperty {
     @Param(0)
-    Integer index;
+    int index;
+    @Param(1)
+    int times;
 }

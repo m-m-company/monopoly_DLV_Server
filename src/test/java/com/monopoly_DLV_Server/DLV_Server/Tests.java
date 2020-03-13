@@ -6,6 +6,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         BuyOrNotBuyTests.class,
-        UnmortageTests.class
+        UnmortgageTests.class
 })
 public class Tests{}

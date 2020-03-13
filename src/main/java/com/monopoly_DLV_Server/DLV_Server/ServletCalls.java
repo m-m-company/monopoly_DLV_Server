@@ -89,10 +89,25 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/payDebt")
-    public ArrayList<Object> payDebt(String propertiesJson, Integer playerJson){
-        if (propertiesJson == null || playerJson == null)
+    public ArrayList<ActionProperty> payDebt(String propertiesJson, Integer actualMoney){
+        ArrayList<ActionProperty> actionProperties = new ArrayList<>();
+        if (propertiesJson == null || actualMoney == null)
             return null;
-        return new ArrayList<>();
+        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        facts.add(new Number(actualMoney * -1));
+        List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "payDebt.dlv");
+        for (AnswerSet answerSet : answerSets){
+            try {
+                for (Object o : answerSet.getAtoms()){
+                    if(o instanceof ActionProperty){
+                        actionProperties.add((ActionProperty) o);
+                    }
+                }
+            } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return actionProperties;
     }
 
     @GetMapping(value = "/auction")

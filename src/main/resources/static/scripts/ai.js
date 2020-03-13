@@ -285,7 +285,9 @@ function AIDlv2(p) {
 			},
 			success: (data) => {
 				data.map((house) => {
-					buyHouse(house.index);
+					for(let i = 0; i < house.times; ++i){
+						buyHouse(house.index);
+					}
 				})
 			},
 			async: false
@@ -410,7 +412,7 @@ function AIDlv2(p) {
 			type: 'GET',
 			url: '/payDebt',
 			data: {
-				squareJson: JSON.stringify(square),
+				propertiesJson: JSON.stringify(getProperties(turn)),
 				actualMoney: p.money //Should be at least -1
 			},
 			success: (data) =>{

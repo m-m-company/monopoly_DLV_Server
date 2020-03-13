@@ -1,6 +1,5 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
-% number(actualMoney)
-% reach(moneyToReach)
+% number(reachMoney)
 
 groupNumberOfProperty(0,12).
 groupNumberOfProperty(1,4).
@@ -36,8 +35,8 @@ propertyHouse(PROPERTY, NUMBER) :- propertyAction(PROPERTY, "sellHouse", N), pro
 moneyEarnedFromHouse(MONEY) :- #sum{P, N, PROPERTY: propertyAction(PROPERTY, "sellHouse",N), property(_,_,_,_,_,GROUP,_,_,PROPERTY), groupHousePrice(GROUP,PRICE), P = PRICE/2} = MONEY.
 moneyEarnedFromProperty(MONEY) :- #sum{P, PROPERTY: propertyAction(PROPERTY, "sellProp"), property(_,_,_,_,_,_,PRICE,_,PROPERTY), P = PRICE/2} = MONEY.
 moneyEarned(MONEY) :- moneyEarnedFromHouse(M1), moneyEarnedFromProperty(M2), MONEY = M1 + M2.
-:- actualMoney(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, reach(M2), ACTUAL+M1 < M2.
-:- actualMoney(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, reach(M2), ACTUAL+M1 > M2+200.
+:- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 < ACTUAL.
+:- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL+200.
 minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LEV.
 %:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1 >= LEVEL2, LEVEL1 - LEVEL2 > 1.
 %:- property(_,_,_,_,_,GROUP,_,_, PROP1), property(_,_,_,_,_,GROUP,_,_, PROP2), PROP1 != PROP2, minLev(PROP1, L1), minLev(PROP2, L2), L1-L2 > 1.
@@ -53,6 +52,9 @@ minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LE
 
 diff(GROUP, D) :- property(_,GROUP,_,_,PROP1), property(_,GROUP,_,_,PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1>=LEVEL2, D=LEVEL1-LEVEL2.
 :- diff(GROUP,D), D>1.
+
+actionProperty(INDEX,0) :- propertyAction(INDEX,"sellProp").
+actionProperty(INDEX,N) :- propertyAction(INDEX,"sellHouse",N), N = #max{NUMBER : propertyAction(INDEX,"sellHouse",NUMBER)}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TEST CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
