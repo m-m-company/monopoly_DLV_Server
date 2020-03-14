@@ -41,7 +41,6 @@ public class ServletCalls {
 
     @GetMapping(value = "/manage")
     public ArrayList<BuyHouse> manage(String propertiesJson, String playerJson) {
-        log.error(propertiesJson);
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(JsonConverter.getInstance().getObject(playerJson, Player.class));
         ArrayList<BuyHouse> as = new ArrayList<>();
@@ -107,6 +106,7 @@ public class ServletCalls {
                 e.printStackTrace();
             }
         }
+        log.error("Mortgage: " + actionProperties);
         return actionProperties;
     }
 

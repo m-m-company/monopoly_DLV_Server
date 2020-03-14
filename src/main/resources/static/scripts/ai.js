@@ -15,11 +15,7 @@ function AITest(p) {
 		console.log("buyProperty");
 		var s = square[index];
 
-		if (p.money > s.price + 50) {
-			return true;
-		} else {
-			return false;
-		}
+		return p.money > s.price + 50;
 
 	}
 
@@ -300,7 +296,9 @@ function AIDlv2(p) {
 				money: p.money
 			},
 			success: (data) =>{
-				data.forEach(i => unmortgage(i));
+				console.log("UNMORTGAGE: "+data);
+				if (data[0] != null)
+					data.forEach(i => unmortgage(i));
 			},
 			async: false
 		});
@@ -408,6 +406,7 @@ function AIDlv2(p) {
 	// Mortgage enough properties to pay debt.
 	// Return: void: don't return anything, just call the functions mortgage()/sellhouse()
 	this.payDebt = function() {
+		let d = null;
 		$.ajax({
 			type: 'GET',
 			url: '/payDebt',
@@ -416,23 +415,19 @@ function AIDlv2(p) {
 				actualMoney: p.money //Should be at least -1
 			},
 			success: (data) =>{
-				//TODO: sceglie su quali proprietà fare mortgage, preferire quelle isolate
-			}
-		})
-		for (var i = 39; i >= 0; i--) {
-			s = square[i];
-
-			if (s.owner === p.index && !s.mortgage && s.house === 0) {
-				mortgage(i);
-				console.log(s.name);
-			}
-
-			if (p.money >= 0) {
-				return;
-			}
-		}
-
-	}
+				data.forEach(prop => {
+					if(prop.times === 0){
+						mortgage(prop.index)
+					}else{
+						sellHouse(prop.index)
+					}
+				})
+				d = data;
+			},
+			async: false
+		});
+		return d;
+	};
 
 	// Determine what to bid during an auction.
 	// Return: integer: -1 for exit auction, 0 for pass, a positive value for the bid.
@@ -451,7 +446,8 @@ function AIDlv2(p) {
 			success: function (data) {
 				console.log(data);
 				//TODO: -1 for exit auction, 0 for pass, a positive value for the bid.
-			}
+			},
+			async: false
 		});
 		bid = currentBid + Math.round(Math.random() * 20 + 10);
 

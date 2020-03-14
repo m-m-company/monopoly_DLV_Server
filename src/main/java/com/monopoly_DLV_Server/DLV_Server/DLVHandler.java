@@ -59,7 +59,6 @@ public class DLVHandler {
         this.setEncoding(DLVHandler.pathToEncodings+encoding);
         for (Object obj : facts)
             this.addFact(obj);
-        log.info(this.facts.getPrograms());
         this.addFactsToHandler();
         return this.getAnswerSets();
     }
