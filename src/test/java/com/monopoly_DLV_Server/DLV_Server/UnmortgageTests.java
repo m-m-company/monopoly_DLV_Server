@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +22,7 @@ public class UnmortgageTests {
         ArrayList<Property> properties = new ArrayList<Property>(Arrays.asList(p1, p2));
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<Integer> result = servletCalls.unmortgage(propertiesJson, 1000);
-        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(1));
+        ArrayList<Integer> expected = new ArrayList<>(Collections.singletonList(1));
         Collections.sort(result);
         Collections.sort(expected);
         for(int i=0 ; i<result.size(); ++i){
@@ -74,7 +73,7 @@ public class UnmortgageTests {
         ArrayList<Property> properties = new ArrayList<Property>(Arrays.asList(p1, p2, p3, p4));
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<Integer> result = servletCalls.unmortgage(propertiesJson, 1000);
-        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(1));
+        ArrayList<Integer> expected = new ArrayList<>(Collections.singletonList(1));
         Collections.sort(result);
         Collections.sort(expected);
         for(int i=0 ; i<result.size(); ++i){
