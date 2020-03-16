@@ -73,4 +73,25 @@ public class PayDebtTests {
         }
     }
 
+    @Test
+    public void minimizeLevelDifference() {
+        Property p1 = new Property("name", 0, "false", 2, 0, 4, 200, 0, 1);
+        Property p2 = new Property("name", 0, "false", 2, 0, 4, 200, 0, 2);
+        Property p3 = new Property("name", 0, "false", 2, 0, 4, 200, 0, 3);
+        Property p4 = new Property("name", 0, "false", 3, 0, 3, 200, 0, 4);
+        Property p5 = new Property("name", 0, "false", 3, 0, 3, 200, 0, 5);
+        ArrayList<Property> properties = new ArrayList<Property>(Arrays.asList(p1, p2, p3, p4, p5));
+        String propertiesJson = JsonConverter.getInstance().toJson(properties);
+        ArrayList<ActionProperty> result = servletCalls.payDebt(propertiesJson, -100);
+        ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(3, 1), new ActionProperty(4,2), new ActionProperty(5,1)));
+        result.sort(comparator);
+        expected.sort(comparator);
+        for(int i = 0; i < result.size(); ++i){
+            Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0){
+            Assert.fail();
+        }
+    }
+
 }

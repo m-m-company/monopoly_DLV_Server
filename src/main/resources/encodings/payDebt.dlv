@@ -30,13 +30,6 @@ bestGroup(1). bestGroup(2).
 moneyEarned(0).
 levelDifference(0).
 
-number(100).
-property("name",0,"false",2,0,4,200,0,1).
-property("name",0,"false",2,0,4,200,0,2).
-property("name",0,"false",2,0,4,200,0,3).
-property("name",0,"false",3,0,3,200,0,4).
-property("name",0,"false",3,0,3,200,0,5).
-
 propertyHouse(PROPERTY, NUMBER) :- property(_,_,_,NUMBER,_,_,_,_,PROPERTY).
 sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,"false",_,_,G,_,_,PROP)} = N.
 propertyAction(P,"sellHouse",N) | notPropertyAction(P,"sellHouse", N) :- propertyHouse(P,N), N > 0.
@@ -46,13 +39,13 @@ moneyEarnedFromHouse(MONEY) :- #sum{P, N, PROPERTY: propertyAction(PROPERTY, "se
 moneyEarnedFromProperty(MONEY) :- #sum{P, PROPERTY: propertyAction(PROPERTY, "sellProp"), property(_,_,_,_,_,_,PRICE,_,PROPERTY), P = PRICE/2} = MONEY.
 moneyEarned(MONEY) :- moneyEarnedFromHouse(M1), moneyEarnedFromProperty(M2), MONEY = M1 + M2.
 :- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 < ACTUAL.
-:- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL+200.
 minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LEV.
 
-:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,G,_,_,P), bestGroup(G). [1@5, P]
-:~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@4]
+:~ propertyAction(P,"sellProp"), property(_,_,_,_,_,G,_,_,P), bestGroup(G). [1@6, P]
+:~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@5]
+:~ number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL, DIFF = M1 - ACTUAL. [DIFF@4]
 groupOwned(G) :- groupNumberOfProperty(G,N), #count{P : property(_,_,_,_,_,G,_,_,P)} = N.
-groupLevel(GROUP,L) :- groupOwned(GROUP), #min{LEVEL : minLev(P,LEVEL), property(_,_,_,_,_,GROUP,_,_,P)} = L.
+groupLevel(GROUP,L) :- groupOwned(GROUP), #min{LEVEL : minLev(P,LEVEL), property(_,_,_,_,_,GROUP,_,_,P)} = L, L < 6.
 lMax(MAX) :- #max{L: groupLevel(_,L)} = MAX.
 lMin(MIN) :- #min{L: groupLevel(_,L)} = MIN.
 levelDifference(L) :- lMax(MAX), lMin(MIN), MAX > MIN, L = MAX - MIN.
@@ -66,4 +59,4 @@ diff(GROUP, D) :- property(_,_,_,_,_,GROUP,_,_,PROP1), property(_,_,_,_,_,GROUP,
 :- diff(GROUP,D), D>1.
 
 actionProperty(INDEX,0) :- propertyAction(INDEX,"sellProp").
-actionProperty(INDEX,N) :- propertyAction(INDEX,"sellHouse",N), N = #max{NUMBER : propertyAction(INDEX,"sellHouse",NUMBER)}.
+actionProperty(INDEX,N) :- propertyAction(INDEX,"sellHouse",_), N = #count{NUMBER : propertyAction(INDEX,"sellHouse",NUMBER)}.
