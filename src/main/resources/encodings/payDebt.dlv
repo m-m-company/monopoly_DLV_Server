@@ -1,6 +1,13 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
 % number(reachMoney)
 
+number(200).
+property("name",0,"false",0,0,1,100,0,1).
+property("name",0,"false",0,0,2,100,0,2).
+property("name",0,"false",0,0,3,100,0,3).
+property("name",0,"false",0,0,3,100,0,4).
+
+% per ogni gruppo ci salviamo il numero di proprietà che ne fanno parte
 groupNumberOfProperty(0,12).
 groupNumberOfProperty(1,4).
 groupNumberOfProperty(2,2).
@@ -13,6 +20,7 @@ groupNumberOfProperty(8,3).
 groupNumberOfProperty(9,3).
 groupNumberOfProperty(10,2).
 
+% prezzo di una casa per ogni gruppo
 groupHousePrice(0,0).
 groupHousePrice(1,0).
 groupHousePrice(2,0).
@@ -25,38 +33,57 @@ groupHousePrice(8,150).
 groupHousePrice(9,200).
 groupHousePrice(10,200).
 
-bestGroup(1). bestGroup(2).
-
-moneyEarned(0).
-levelDifference(0).
-
+% per ogni proprietà mi salvo il numero di case che ho su di essa
 propertyHouse(PROPERTY, NUMBER) :- property(_,_,_,NUMBER,_,_,_,_,PROPERTY).
-sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,"false",_,_,G,_,_,PROP)} = N.
+
+% faccio il guess sia per il vendere proprietà, che per vendere case
 propertyAction(P,"sellHouse",N) | notPropertyAction(P,"sellHouse", N) :- propertyHouse(P,N), N > 0.
 propertyAction(P,"sellProp")  | notPropertyAction(P,"sellProp") :- property(_,_,"false",_,_,_,_,_,P), propertyHouse(P, 0).
+
+% aggiorno il numero di case delle proprietà su cui ho venduto. Non c'è bisogno di fare lo stesso con le sellProp perchè l'indice è univoco
 propertyHouse(PROPERTY, NUMBER) :- propertyAction(PROPERTY, "sellHouse", N), propertyHouse(PROPERTY, N), NUMBER = N-1, NUMBER>=0.
+
+% mi calcolo il numero di case, ossia il livello aggiornato, di ogni proprietà
+minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LEV.
+
+% non è possibile continuare a vendere case su una proprietà senza considerare il livello del gruppo
+diff(GROUP, D) :- property(_,_,_,_,_,GROUP,_,_,PROP1), property(_,_,_,_,_,GROUP,_,_,PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1>=LEVEL2, D=LEVEL1-LEVEL2.
+:- diff(GROUP,D), D>1.
+
+% calcolo il totale guadagnato dalla vendita di case e proprietà e verifico che sono riuscito a pagare il debito(number)
+moneyEarned(0).
 moneyEarnedFromHouse(MONEY) :- #sum{P, N, PROPERTY: propertyAction(PROPERTY, "sellHouse",N), property(_,_,_,_,_,GROUP,_,_,PROPERTY), groupHousePrice(GROUP,PRICE), P = PRICE/2} = MONEY.
 moneyEarnedFromProperty(MONEY) :- #sum{P, PROPERTY: propertyAction(PROPERTY, "sellProp"), property(_,_,_,_,_,_,PRICE,_,PROPERTY), P = PRICE/2} = MONEY.
 moneyEarned(MONEY) :- moneyEarnedFromHouse(M1), moneyEarnedFromProperty(M2), MONEY = M1 + M2.
 :- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 < ACTUAL.
-minLev(PROP, LEV) :- propertyHouse(PROP,_), #min{L: propertyHouse(PROP, L)} = LEV.
 
+% pago per ogni proprietà venduta, appartenente ai gruppi 1 o 2
+bestGroup(1). bestGroup(2).
 :~ propertyAction(P,"sellProp"), property(_,_,_,_,_,G,_,_,P), bestGroup(G). [1@6, P]
+
+% per ogni proprietà venduta, pago il numero di proprietà che fanno parte del suo gruppo
+sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,"false",_,_,G,_,_,PROP)} = N.
 :~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@5]
+
+% se guadagnamo più di quello che ci serve, paghiamo quella cifra
 :~ number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL, DIFF = M1 - ACTUAL. [DIFF@4]
+
+% se vendo case, cerco di mantenere il livello dei gruppi bilanciato, senza però guadagnare troppo
+levelDifference(0).
 groupOwned(G) :- groupNumberOfProperty(G,N), #count{P : property(_,_,_,_,_,G,_,_,P)} = N.
 groupLevel(GROUP,L) :- groupOwned(GROUP), #min{LEVEL : minLev(P,LEVEL), property(_,_,_,_,_,GROUP,_,_,P)} = L, L < 6.
 lMax(MAX) :- #max{L: groupLevel(_,L)} = MAX.
 lMin(MIN) :- #min{L: groupLevel(_,L)} = MIN.
 levelDifference(L) :- lMax(MAX), lMin(MIN), MAX > MIN, L = MAX - MIN.
 :~ #max{L : levelDifference(L)} = LEVEL. [LEVEL@3]
+
+% se devo scegliere tra due proprietà preferisco quella con il baserent più basso
 :~ propertyAction(P,"sellProp"), property(_,_,_,_,_,_,_,B,P). [B@2, P]
+
+% se posso, preferisco vendere il meno possibile
 :~ propertyAction(P,"sellProp"). [1@1, P]
 :~ propertyAction(P,"sellHouse",_). [1@1, P]
 
-
-diff(GROUP, D) :- property(_,_,_,_,_,GROUP,_,_,PROP1), property(_,_,_,_,_,GROUP,_,_,PROP2), PROP1 != PROP2, minLev(PROP1, LEVEL1), minLev(PROP2, LEVEL2), LEVEL1>=LEVEL2, D=LEVEL1-LEVEL2.
-:- diff(GROUP,D), D>1.
-
+% output del programma
 actionProperty(INDEX,0) :- propertyAction(INDEX,"sellProp").
 actionProperty(INDEX,N) :- propertyAction(INDEX,"sellHouse",_), N = #count{NUMBER : propertyAction(INDEX,"sellHouse",NUMBER)}.
