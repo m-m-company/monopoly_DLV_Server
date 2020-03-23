@@ -13,4 +13,6 @@ import lombok.NoArgsConstructor;
 public class Number {
     @Param(0)
     public Integer number;
+    @Param(1)
+    public String semantic;
 }

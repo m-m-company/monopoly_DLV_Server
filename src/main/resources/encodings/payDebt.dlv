@@ -1,11 +1,6 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
 % number(reachMoney)
 
-number(200).
-property("name",0,"false",0,0,1,100,0,1).
-property("name",0,"false",0,0,2,100,0,2).
-property("name",0,"false",0,0,3,100,0,3).
-property("name",0,"false",0,0,3,100,0,4).
 
 % per ogni gruppo ci salviamo il numero di proprietà che ne fanno parte
 groupNumberOfProperty(0,12).
@@ -55,7 +50,7 @@ moneyEarned(0).
 moneyEarnedFromHouse(MONEY) :- #sum{P, N, PROPERTY: propertyAction(PROPERTY, "sellHouse",N), property(_,_,_,_,_,GROUP,_,_,PROPERTY), groupHousePrice(GROUP,PRICE), P = PRICE/2} = MONEY.
 moneyEarnedFromProperty(MONEY) :- #sum{P, PROPERTY: propertyAction(PROPERTY, "sellProp"), property(_,_,_,_,_,_,PRICE,_,PROPERTY), P = PRICE/2} = MONEY.
 moneyEarned(MONEY) :- moneyEarnedFromHouse(M1), moneyEarnedFromProperty(M2), MONEY = M1 + M2.
-:- number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 < ACTUAL.
+:- number(ACTUAL, "moneyToReach"), #max{MONEY:moneyEarned(MONEY)} = M1, M1 < ACTUAL.
 
 % pago per ogni proprietà venduta, appartenente ai gruppi 1 o 2
 bestGroup(1). bestGroup(2).
@@ -66,7 +61,7 @@ sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,
 :~ propertyAction(P,"sellProp"), sameGroup(P, N). [N@5]
 
 % se guadagnamo più di quello che ci serve, paghiamo quella cifra
-:~ number(ACTUAL), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL, DIFF = M1 - ACTUAL. [DIFF@4]
+:~ number(ACTUAL, "moneyToReach"), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL, DIFF = M1 - ACTUAL. [DIFF@4]
 
 % se vendo case, cerco di mantenere il livello dei gruppi bilanciato, senza però guadagnare troppo
 levelDifference(0).

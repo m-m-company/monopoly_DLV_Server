@@ -1,0 +1,4 @@
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, index)
+% player(name, position, money, jail, bidding, index)
+% number(value, "highestBid")
+% number(value, "mySelf"), my index

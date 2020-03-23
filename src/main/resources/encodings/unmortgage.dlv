@@ -1,7 +1,7 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
 % number(actualMONEY)
 
-limitMoney(MONEY) :- number(A), MONEY = A/5 . %Max 20% actual
+limitMoney(MONEY) :- number(A, "actualMoney"), MONEY = A/5 . %Max 20% actual
 bestGroup(1). bestGroup(2).
 
 sameGroup(PROP, N) :- property(_,_,"true", _,_ ,GROUP, _,_,PROP), #count{P2: property(_,_,_,_,_,GROUP,_,_,P2), P2 != PROP} = N.

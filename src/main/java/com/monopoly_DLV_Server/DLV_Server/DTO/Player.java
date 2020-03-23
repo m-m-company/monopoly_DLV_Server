@@ -6,32 +6,39 @@ import it.unical.mat.embasp.languages.Param;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 //Questa annotazione genera: Getter, Setter, ToString, Equals, Hashcode e il costruttore con tutti
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Id("player")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
-	@Param(0)
-   	String name;
-	String color;
-	@Param(1)
-	int position;
-	@Param(2)
-	int money;
-	int creditor;
-	int index;
-	@Param(3)
-	String jail;
-	int jailroll;
-	boolean communityChestJailCard;
-	boolean chanceJailCard;
-	boolean bidding;
-	boolean human;
-	@Param(4)
-	String dlv;
+    @Param(0)
+    String name;
+    String color;
+    @Param(1)
+    int position;
+    @Param(2)
+    int money;
+    int creditor;
+    @Param(5)
+    int index;
+    @Param(3)
+    String jail;
+    int jailroll;
+    boolean communityChestJailCard;
+    boolean chanceJailCard;
+    @Param(4)
+    boolean bidding;
+    boolean human;
+    String dlv;
+
+    public boolean getBidding() {
+        return this.bidding;
+    }
+
+    public void setBidding(boolean bidding) {
+        this.bidding = bidding;
+    }
 }

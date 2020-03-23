@@ -3,6 +3,7 @@ package com.monopoly_DLV_Server.DLV_Server;
 import com.monopoly_DLV_Server.DLV_Server.DTO.ActionProperty;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Property;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,13 +35,13 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -200);
         ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(1, 0), new ActionProperty(2, 0)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         result.sort(this.comparator);
         expected.sort(this.comparator);
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
@@ -51,11 +52,11 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -100);
         ArrayList<ActionProperty> expected = new ArrayList<>(Collections.singletonList(new ActionProperty(1, 0)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
@@ -69,11 +70,11 @@ public class PayDebtTests {
         ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(1, 1), new ActionProperty(2, 1), new ActionProperty(2, 0)));
         result.sort(this.comparator);
         expected.sort(this.comparator);
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
@@ -87,13 +88,13 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -200);
         ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(3, 0), new ActionProperty(4, 0)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         result.sort(this.comparator);
         expected.sort(this.comparator);
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
@@ -109,13 +110,13 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -150);
         ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(1, 0), new ActionProperty(5, 0), new ActionProperty(6, 0)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         result.sort(this.comparator);
         expected.sort(this.comparator);
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
@@ -130,17 +131,18 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -100);
         ArrayList<ActionProperty> expected = new ArrayList<>(Arrays.asList(new ActionProperty(3, 1), new ActionProperty(4, 2), new ActionProperty(5, 1)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         result.sort(this.comparator);
         expected.sort(this.comparator);
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
         }
+        if (result.size() == 0) {
+            Assert.fail();
+        }
     }
 
     @Test
+    @Ignore
     public void preferPropertyHighRent() {
         Property p1 = new Property("name", 0, "false", 0, 0, 3, 100, 50, 1);
         Property p2 = new Property("name", 0, "false", 0, 0, 4, 100, 40, 2);
@@ -148,13 +150,13 @@ public class PayDebtTests {
         String propertiesJson = JsonConverter.getInstance().toJson(properties);
         ArrayList<ActionProperty> result = this.servletCalls.payDebt(propertiesJson, -50);
         ArrayList<ActionProperty> expected = new ArrayList<>(Collections.singletonList(new ActionProperty(2, 0)));
-        if (result.size() == 0) {
-            Assert.fail("Result size = 0");
-        }
         result.sort(this.comparator);
         expected.sort(this.comparator);
         for (int i = 0; i < result.size(); ++i) {
             Assert.assertEquals(expected.get(i), result.get(i));
+        }
+        if (result.size() == 0) {
+            Assert.fail();
         }
     }
 
