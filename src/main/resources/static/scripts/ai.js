@@ -232,7 +232,7 @@ function AIDlv2(p) {
 			async: false
 		});
 		return returnValue;
-	};
+	}; //DONE
 
 	// Determine the response to an offered trade.
 	// Return: boolean/instanceof Trade: a valid Trade object to counter offer (with the AI as the recipient); false to decline; true to accept.
@@ -302,51 +302,8 @@ function AIDlv2(p) {
 			},
 			async: false
 		});
-		// Buy houses.
-		/*for (var i = 0; i < 40; i++) {
-			s = square[i];
-
-			if (s.owner === p.index && s.groupNumber >= 3) {
-				max = s.group.length;
-				allGroupOwned = true;
-				leastHouseNumber = 6; // No property will ever have 6 houses.
-
-				for (var j = max - 1; j >= 0; j--) {
-					if (square[s.group[j]].owner !== p.index) {
-						allGroupOwned = false;
-						break;
-					}
-
-					if (square[s.group[j]].house < leastHouseNumber) {
-						leastHouseProperty = square[s.group[j]];
-						leastHouseNumber = leastHouseProperty.house;
-					}
-				}
-
-				if (!allGroupOwned) {
-					continue;
-				}
-
-				if (p.money > leastHouseProperty.houseprice + 100) {
-					buyHouse(leastHouseProperty.index);
-				}
-
-
-			}
-		}
-
-
-		// Unmortgage property
-		for (var i = 39; i >= 0; i--) {
-			s = square[i];
-
-			if (s.owner === p.index && s.mortgage && p.money > s.price) {
-				unmortgage(i);
-			}
-		}
-*/
 		return false;
-	}
+	};
 
 	var utilityForRailroadFlag = true; // Don't offer this trade more than once.
 
@@ -406,7 +363,6 @@ function AIDlv2(p) {
 	// Mortgage enough properties to pay debt.
 	// Return: void: don't return anything, just call the functions mortgage()/sellhouse()
 	this.payDebt = function() {
-		let d = null;
 		$.ajax({
 			type: 'GET',
 			url: '/payDebt',
@@ -421,12 +377,10 @@ function AIDlv2(p) {
 					}else{
 						sellHouse(prop.index)
 					}
-				})
-				d = data;
+				});
 			},
 			async: false
 		});
-		return d;
 	};
 
 	// Determine what to bid during an auction.
