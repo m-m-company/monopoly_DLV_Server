@@ -1,7 +1,8 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
-import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
+import com.monopoly_DLV_Server.DLV_Server.wrappers.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.wrappers.Number;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -21,18 +22,33 @@ import java.util.List;
 
 @Slf4j
 public class DLVHandler {
+    private static final String pathToEncodings = "src/main/resources/encodings/";
     private static String pathToExe = null;
     private static DLVHandler instance = null;
-    private static final String pathToEncodings = "src/main/resources/encodings/";
     private Handler handler;
     private InputProgram facts;
     private InputProgram encoding;
 
-    public static DLVHandler getInstance(){
-        if(instance == null){
-            instance = new DLVHandler();
+    private DLVHandler() {
+        this.setPathToExe();
+        this.handler = new DesktopHandler(new DLV2DesktopService(DLVHandler.pathToExe));
+        this.facts = new ASPInputProgram();
+        try {
+            this.registerClasses();
+        } catch (ObjectNotValidException | IllegalAnnotationException e) {
+            e.printStackTrace();
         }
-        return instance;
+        this.encoding = new ASPInputProgram();
+    }
+
+    private void setPathToExe() {
+        if (DLVHandler.pathToExe == null) {
+            //Cannot do this on constructor 'cause File(".") doesn't exist, java reasons
+            StringBuilder path = new StringBuilder(new File(".").getAbsolutePath());
+            path.deleteCharAt(path.indexOf("."));
+            pathToExe = path + File.separator + "src" + File.separator + "main" +
+                    File.separator + "resources" + File.separator + "libs" + File.separator + "dlv2.win.x64_5";
+        }
     }
 
     private void registerClasses() throws ObjectNotValidException, IllegalAnnotationException {
@@ -45,58 +61,43 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(ActionProperty.class);
     }
 
-    private void setPathToExe(){
-        if (DLVHandler.pathToExe == null) {
-            //Cannot do this on constructor 'cause File(".") doesn't exist, java reasons
-            StringBuilder path = new StringBuilder(new File(".").getAbsolutePath());
-            path.deleteCharAt(path.indexOf("."));
-            pathToExe = path + File.separator + "src" + File.separator + "main" +
-                    File.separator + "resources" + File.separator + "libs" + File.separator + "dlv2.win.x64_5";
+    public static DLVHandler getInstance() {
+        if (instance == null) {
+            instance = new DLVHandler();
         }
+        return instance;
     }
 
-    public List<AnswerSet> startGuess(Collection<Object> facts, String encoding){
-        this.setEncoding(DLVHandler.pathToEncodings+encoding);
+    public List<AnswerSet> startGuess(Collection<Object> facts, String encoding) {
+        this.setEncoding(DLVHandler.pathToEncodings + encoding);
         for (Object obj : facts)
             this.addFact(obj);
         this.addFactsToHandler();
         return this.getAnswerSets();
     }
 
-    private DLVHandler(){
-        setPathToExe();
-        handler = new DesktopHandler(new DLV2DesktopService(DLVHandler.pathToExe));
-        facts = new ASPInputProgram();
-        try {
-            registerClasses();
-        } catch (ObjectNotValidException | IllegalAnnotationException e) {
-            e.printStackTrace();
-        }
-        encoding = new ASPInputProgram();
+    private void setEncoding(String path) {
+        this.facts.clearAll();
+        this.handler.removeAll();
+        this.encoding.clearAll();
+        this.encoding.addFilesPath(path);
+        this.handler.addProgram(this.encoding);
     }
 
-    private void addFact(Object object){
+    private void addFact(Object object) {
         try {
-            facts.addObjectInput(object);
+            this.facts.addObjectInput(object);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addFactsToHandler(){
-        handler.addProgram(facts);
+    private void addFactsToHandler() {
+        this.handler.addProgram(this.facts);
     }
 
-    private void setEncoding(String path){
-        facts.clearAll();
-        handler.removeAll();
-        encoding.clearAll();
-        encoding.addFilesPath(path);
-        handler.addProgram(encoding);
-    }
-
-    private List<AnswerSet> getAnswerSets(){
-        Output o = handler.startSync();
+    private List<AnswerSet> getAnswerSets() {
+        Output o = this.handler.startSync();
         AnswerSets answerSets = (AnswerSets) o;
         return answerSets.getAnswersets();
     }

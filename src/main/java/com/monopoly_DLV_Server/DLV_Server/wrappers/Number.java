@@ -1,4 +1,4 @@
-package com.monopoly_DLV_Server.DLV_Server.DTO;
+package com.monopoly_DLV_Server.DLV_Server.wrappers;
 
 import it.unical.mat.embasp.languages.Id;
 import it.unical.mat.embasp.languages.Param;

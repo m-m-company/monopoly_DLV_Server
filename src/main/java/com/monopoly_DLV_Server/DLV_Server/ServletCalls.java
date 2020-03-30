@@ -1,7 +1,8 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
-import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
+import com.monopoly_DLV_Server.DLV_Server.wrappers.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.wrappers.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +21,11 @@ public class ServletCalls {
         if (playerJson == null || propertyJson == null || numberOfTheSameGroup == null)
             return null;
         Object player = JsonConverter.getInstance().getObject(playerJson, Player.class);
+        Number actualMoney = new Number(((Player) player).getMoney(), "actualMoney");
         Object property = JsonConverter.getInstance().getObject(propertyJson, Property.class);
         Number number = new Number(numberOfTheSameGroup, "sameGroup");
         ArrayList<Object> facts = new ArrayList<>();
-        facts.add(player);
+        facts.add(actualMoney);
         facts.add(property);
         facts.add(number);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
