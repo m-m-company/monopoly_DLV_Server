@@ -29,6 +29,7 @@ public class ServletCalls {
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
         for (AnswerSet a :
                 answerSets) {
+            log.error(String.valueOf(answerSets));
             for (Object o : a.getAtoms()) {
                 if (o instanceof BooleanValue) {
                     return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
