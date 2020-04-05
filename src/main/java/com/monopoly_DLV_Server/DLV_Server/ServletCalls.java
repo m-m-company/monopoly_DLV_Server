@@ -31,7 +31,6 @@ public class ServletCalls {
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
         for (AnswerSet a :
                 answerSets) {
-            log.error(String.valueOf(answerSets));
             for (Object o : a.getAtoms()) {
                 if (o instanceof BooleanValue) {
                     return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
@@ -44,7 +43,9 @@ public class ServletCalls {
     @GetMapping(value = "/manage")
     public ArrayList<BuyHouse> manage(String propertiesJson, String playerJson) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
-        facts.add(JsonConverter.getInstance().getObject(playerJson, Player.class));
+        Player player = (Player) JsonConverter.getInstance().getObject(playerJson, Player.class);
+        Number limit = new Number((int) (player.getMoney() * 0.3), "limit");
+        facts.add(limit);
         ArrayList<BuyHouse> as = new ArrayList<>();
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "manage.dlv");
         for (AnswerSet a : answerSets) {

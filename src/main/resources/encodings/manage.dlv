@@ -1,5 +1,5 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
-% player(name, actualPosition, actualMoney, jail, bidding, _).
+% number(MONEY, "limit")
 
 groupNumberOfProperty(0,12).
 groupNumberOfProperty(1,4).
@@ -25,7 +25,7 @@ groupHousePrice(9,200).
 groupHousePrice(10,200).
 spentMoney(0).
 
-limitMoney(MONEY) :- player(_,_,A,_,_,_), MONEY = A/3 . %Max 33% actual
+limitMoney(MONEY) :- number(MONEY,"limit").
 
 canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,_,_,_,_,GROUP,_,_,P)} = NUMBER.
 
