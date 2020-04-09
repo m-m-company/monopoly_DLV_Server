@@ -396,7 +396,8 @@ function AIDlv2(p) {
                 playersArrayJson: player.filter(p => p.bidding),
                 property: property, //abbiamo anche il valore reale
                 highestBid: currentBid,
-                whoAmI: turn
+                whoAmI: turn,
+                numberOfTheSameGroup: getPropertyWithSameColor(turn, property.groupNumber)
             },
             success: function (data) {
                 console.log(data);

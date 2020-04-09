@@ -114,15 +114,17 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/auction")
-    public Integer auction(String playersArrayJson, String property, Integer highestBid, Integer whoAmI) {
+    public Integer auction(String playersArrayJson, String property, Integer highestBid, Integer whoAmI, Integer sameGroup) {
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersArrayJson, Player.class);
         Object p = JsonConverter.getInstance().getObject(property, Property.class);
         Object highBid = new Number(highestBid, "highestBid");
         Object mySelf = new Number(whoAmI, "mySelf");
+        Object sg = new Number(sameGroup, "sameGroup");
         ArrayList<Object> facts = new ArrayList<>(players);
         facts.add(p);
         facts.add(highBid);
         facts.add(mySelf);
+        facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
         for (AnswerSet a : answerSets) {
             try {
