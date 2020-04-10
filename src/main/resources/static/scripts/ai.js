@@ -239,7 +239,27 @@ function AIDlv2(p) {
     // Arguments:
     // tradeObj: the proposed trade, an instanceof Trade, has the AI as the recipient.
     this.acceptTrade = function (tradeObj) {  //TODO: Ajax call
-        var tradeValue = 0;
+        var properties = [];
+        for (var i = 0; i < 40; ++i) {
+            if (tradeObj.getProperty(i) !== 0) {
+                properties.push(square[i]);
+            }
+        }
+        $.ajax({
+            type: "GET",
+            url: "/acceptTrade",
+            data: {
+                money : tradeObj.getMoney(),
+                property : properties,
+                recipient : tradeObj.getRecipient(),
+                communityChestJailCard : tradeObj.getCommunityChestJailCard(),
+                chanceJailCard : tradeObj.getChanceJailCard()
+            },
+            success: function (data) {
+                //TODO: Gestire l'output
+            }
+        });
+        /*var tradeValue = 0;
         var money = tradeObj.getMoney();
         var initiator = tradeObj.getInitiator();
         var recipient = tradeObj.getRecipient();
@@ -266,8 +286,8 @@ function AIDlv2(p) {
             return new Trade(initiator, recipient, proposedMoney, property, tradeObj.getCommunityChestJailCard(), tradeObj.getChanceJailCard());
         }
 
-        return false;
-    }
+        return false;*/
+    };
 
     // This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
