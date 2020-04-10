@@ -250,7 +250,8 @@ function AIDlv2(p) {
             url: "/acceptTrade",
             data: {
                 money : tradeObj.getMoney(),
-                property : properties,
+                propertiesTrade : JSON.stringify(properties),
+                myProperties : JSON.stringify(getProperties(tradeObj.getRecipient())),
                 recipient : tradeObj.getRecipient(),
                 communityChestJailCard : tradeObj.getCommunityChestJailCard(),
                 chanceJailCard : tradeObj.getChanceJailCard()

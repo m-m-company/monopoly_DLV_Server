@@ -54,6 +54,7 @@ public class DLVHandler {
     private void registerClasses() throws ObjectNotValidException, IllegalAnnotationException {
         ASPMapper.getInstance().registerClass(Player.class);
         ASPMapper.getInstance().registerClass(Property.class);
+        ASPMapper.getInstance().registerClass(PropertyTrade.class);
         ASPMapper.getInstance().registerClass(Number.class);
         ASPMapper.getInstance().registerClass(BooleanValue.class);
         ASPMapper.getInstance().registerClass(BuyHouse.class);

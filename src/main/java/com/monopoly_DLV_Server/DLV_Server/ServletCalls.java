@@ -70,6 +70,12 @@ public class ServletCalls {
         return "proposeTradeResponse";
     }
 
+    @GetMapping(value = "/acceptTrade")
+    public Boolean acceptTrade(Integer money, String propertiesTradeJson, String myProperties, Integer owner,
+                               Integer communityChestCard, Integer chanceJailCard) {
+        return true;
+    }
+
     @GetMapping(value = "/unmortgage")
     public ArrayList<Integer> unmortgage(String propertiesJson, Integer money) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
