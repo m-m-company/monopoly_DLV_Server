@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -72,8 +73,29 @@ public class ServletCalls {
 
     @GetMapping(value = "/acceptTrade")
     public Boolean acceptTrade(Integer money, String propertiesTradeJson, String myProperties, Integer owner,
-                               Integer communityChestCard, Integer chanceJailCard) {
-        return true;
+                               Integer communityChestJailCard, Integer chanceJailCard) {
+        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesTradeJson, PropertyTrade.class);
+        facts.addAll(JsonConverter.getInstance().getArray(myProperties, Property.class));
+        Number m = null;
+        if (money >= 0) {
+            m = new Number(money, "offered");
+        }
+        else {
+            m = new Number(-money, "requested");
+        }
+        facts.add(m);
+        facts.add(new Number(owner, "owner"));
+        facts.add(new Number(communityChestJailCard, "communityChestJailCard"));
+        facts.add(new Number(chanceJailCard, "chanceJailCard"));
+        List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "acceptTrade.dlv");
+        AnswerSet answerSet = answerSets.get(0);
+        Map<Integer, Integer> weights = answerSet.getWeights();
+        System.out.println(weights);
+        Integer positive = weights.get(1);
+        System.out.println(positive);
+        Integer negative = weights.get(2);
+        System.out.println(negative);
+        return positive > negative;
     }
 
     @GetMapping(value = "/unmortgage")
