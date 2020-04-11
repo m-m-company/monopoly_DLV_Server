@@ -3,7 +3,7 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
 % number(value,"owner")
 % number(value,"communityChestJailCard")
-% number(value,"ChanceJailCard")
+% number(value,"chanceJailCard")
 
 % punteggi per ogni gruppo
 groupValue(3,75).
@@ -24,7 +24,7 @@ offeredProperty(P,Mortgage,Group,Price,BaseRent) :- propertyTrade(_,O,Mortgage,_
 % calcolo i prezzi reali
 offeredPropertyRealPrice(P,Price) :- offeredProperty(P,"true",_,Pr,_), Price = Pr/2.
 offeredPropertyRealPrice(P,Price) :- offeredProperty(P,"false",_,Price,_).
-requestedPropertyRealPrice(P,Price) :- requestedProperty(P,"true",_,Pr,_), Price = Pr*2.
+requestedPropertyRealPrice(P,Price) :- requestedProperty(P,"true",_,Pr,_), Price = Pr/2.
 requestedPropertyRealPrice(P,Price) :- requestedProperty(P,"false",_,Price,_).
 
 groupPropertiesNumber(G,Number) :- groupValue(G,_), #count{P : property(_,_,_,_,_,G,_,_,P)} = Number.
@@ -35,12 +35,12 @@ groupPropertiesNumber(G,Number) :- groupValue(G,_), #count{P : property(_,_,_,_,
 
 :~ number(Value,"offered"). [Value@1]
 :~ number(1,"communityChestJailCard"). [150@1]
-:~ number(1,"ChanceJailCard"). [150@1]
+:~ number(1,"chanceJailCard"). [150@1]
 :~ offeredPropertyRealPrice(P,Price). [Price@1, P]
 :~ offeredProperty(P,_,G,_,_), groupPropertiesNumber(G,N), N > 0, groupValue(G,V). [V@1, P]
 
 :~ number(Value,"requested"). [Value@2]
 :~ number(-1,"communityChestJailCard"). [150@2]
-:~ number(-1,"ChanceJailCard"). [150@2]
+:~ number(-1,"chanceJailCard"). [150@2]
 :~ requestedPropertyRealPrice(P,Price). [Price@2, P]
 :~ requestedProperty(P,_,G,_,_), groupPropertiesNumber(G,N), N > 0, groupValue(G,V). [V@2, P]

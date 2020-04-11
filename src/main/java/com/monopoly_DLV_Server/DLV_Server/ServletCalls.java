@@ -72,10 +72,15 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/acceptTrade")
-    public Boolean acceptTrade(Integer money, String propertiesTradeJson, String myProperties, Integer owner,
+    public Boolean acceptTrade(Integer money, String myPropertiesJson, String propertiesTradeJson, Integer owner,
                                Integer communityChestJailCard, Integer chanceJailCard) {
-        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesTradeJson, PropertyTrade.class);
-        facts.addAll(JsonConverter.getInstance().getArray(myProperties, Property.class));
+        ArrayList<Object> facts = new ArrayList<>();
+        if (!myPropertiesJson.equals("empty")) {
+            facts.addAll(JsonConverter.getInstance().getArray(myPropertiesJson, Property.class));
+        }
+        if (!propertiesTradeJson.equals("empty")) {
+            facts.addAll(JsonConverter.getInstance().getArray(propertiesTradeJson, PropertyTrade.class));
+        }
         Number m = null;
         if (money >= 0) {
             m = new Number(money, "offered");
@@ -90,11 +95,8 @@ public class ServletCalls {
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "acceptTrade.dlv");
         AnswerSet answerSet = answerSets.get(0);
         Map<Integer, Integer> weights = answerSet.getWeights();
-        System.out.println(weights);
         Integer positive = weights.get(1);
-        System.out.println(positive);
         Integer negative = weights.get(2);
-        System.out.println(negative);
         return positive > negative;
     }
 

@@ -238,20 +238,25 @@ function AIDlv2(p) {
     // Return: boolean/instanceof Trade: a valid Trade object to counter offer (with the AI as the recipient); false to decline; true to accept.
     // Arguments:
     // tradeObj: the proposed trade, an instanceof Trade, has the AI as the recipient.
-    this.acceptTrade = function (tradeObj) {  //TODO: Ajax call
-        var properties = [];
-        for (var i = 0; i < 40; ++i) {
+    this.acceptTrade = function (tradeObj) {
+        let myProperties = getProperties(tradeObj.getRecipient());
+        let propertiesTrade = [];
+        for (let i = 0; i < 40; ++i) {
             if (tradeObj.getProperty(i) !== 0) {
-                properties.push(square[i]);
+                propertiesTrade.push(square[i]);
             }
         }
+        let myPropertiesJson;
+        let propertiesTradeJson;
+        myProperties.length === 0 ? myPropertiesJson = "empty" : myPropertiesJson = JSON.stringify(myProperties);
+        propertiesTrade.length === 0 ? propertiesTradeJson = "empty" : propertiesTradeJson = JSON.stringify(propertiesTrade);
         $.ajax({
             type: "GET",
             url: "/acceptTrade",
             data: {
                 money : tradeObj.getMoney(),
-                propertiesTradeJson : JSON.stringify(properties),
-                myPropertiesJson : JSON.stringify(getProperties(tradeObj.getRecipient())),
+                myPropertiesJson : myPropertiesJson,
+                propertiesTradeJson : propertiesTradeJson,
                 owner : tradeObj.getRecipient(),
                 communityChestJailCard : tradeObj.getCommunityChestJailCard(),
                 chanceJailCard : tradeObj.getChanceJailCard()
