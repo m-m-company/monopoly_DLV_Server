@@ -1,8 +1,37 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, index)
 % player(name, position, money, jail, bidding, index)
+% number(value, "propertyIndex")
 % number(value, "highestBid")
 % number(value, "mySelf"), my index
 % number(value, "sameGroup") how many prop of the same group I have
+% number(value, "limit") limite di soldi da poter spendere
 % output: number(value, "offer")
 
+preferredGroup(1). preferredGroup(2).
+
+% proprietà all'asta
+auctionProperty(Index, Group, Price) :- property(_,_,_,_,_,Group,Price,_,Index), number(Index, "propertyIndex").
+
+% join tra i player e le property
+playerProperty(Player, Property) :- player(_,_,_,_,_,_,_,_,Player), property(_,Player,_,_,_,Property).
+
+% per ogni player ci salviamo il numero di proprietà dello stesso gruppo rispetto alla proprietà dell'asta
+playerNumberOfGroupProperty(Player, Number) :- player(_,_,_,_,_,Player), not number(Player, "mySelf"), auctionProperty(_,G,_), #count{P : property(_,Player,_,_,_,G,_,_,P)} = Number.
+
+% se non posso economicamente non faccio nulla
 bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(I, "mySelf"), I = Index, Value<M.
+
+% casi in cui non biddo
+notBid :- number(V, "highestBid"), number(L, "limit"), V > L.
+notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid"), Bid > P, #max{N : playerNumberOfGroupProperty(_,N)} = 0.
+notBid :- auctionProperty(_,G,P), preferredGroup(G), number(Bid, "highestBid"), Bid > P + 200.
+
+% possibili offerte in base ai casi
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G), O = Bid + 50.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
+
+% offerta finale
+number(P, "offer") :- bid, #max{O : probablyOffer(O)} = P.
+number(0, "offer") :- notBid.

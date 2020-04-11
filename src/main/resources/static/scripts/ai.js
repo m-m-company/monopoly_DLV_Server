@@ -263,11 +263,12 @@ function AIDlv2(p) {
                 chanceJailCard: tradeObj.getChanceJailCard()
             },
             success: function (data) {
-                returnValue = data;
-            }
+                returnValue = data
+            },
+            async : false
         });
         return returnValue;
-    };
+    }; //DONE
 
     // This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
@@ -303,14 +304,14 @@ function AIDlv2(p) {
             async: false
         });
         return false;
-    };
+    }; //DONE
 
     var utilityForRailroadFlag = true; // Don't offer this trade more than once.
 
 
     // This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
-    this.onLand = function () { //TODO: capire che fa
+    this.onLand = function () {
         var proposedTrade;
         var property = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         var railroadIndexes = [5, 15, 25, 35];
@@ -346,11 +347,11 @@ function AIDlv2(p) {
         }
 
         return false;
-    }
+    }; //TODO: capire che fa
 
     // Determine whether to post bail/use get out of jail free card (if in possession).
     // Return: boolean: true to post bail/use card.
-    this.postBail = function () { //TODO: Ajax call
+    this.postBail = function () {
 
         // p.jailroll === 2 on third turn in jail.
         if ((p.communityChestJailCard || p.chanceJailCard) && p.jailroll === 2) {
@@ -358,7 +359,7 @@ function AIDlv2(p) {
         } else {
             return false;
         }
-    }
+    }; //TODO: Ajax call
 
     // Mortgage enough properties to pay debt.
     // Return: void: don't return anything, just call the functions mortgage()/sellhouse()
@@ -381,23 +382,34 @@ function AIDlv2(p) {
             },
             async: false
         });
-    };
+    }; //TODO: Testare
 
     // Determine what to bid during an auction.
     // Return: integer: -1 for exit auction, 0 for pass, a positive value for the bid.
-    this.bid = function (property, currentBid) {
+    this.bid = function (property, currentBid, currentBidder) {
         var bid;
+        let players = player.filter(p => p.bidding);
+        let properties = [];
+        players.map(player => {
+           square.map(s => {
+              if (player.index === s.owner) {
+                  properties.push(s);
+              }
+           });
+        });
+        properties.push(property);
         $.ajax({
             type: "GET",
             url: "/auction",
             data: {
                 //TODO: Vanno passati denaro, proprietà in questione, offerta più alta, valore reale, ecc.
                 //TODO: forse conviene passare tutti i giocatori che hanno bidding a true così da poter fare una roba aggressiva anche se in "perdita", tipo tu hai 200, io 300 e sparo un prezzo più alto di 200
-                playersArrayJson: player.filter(p => p.bidding),
-                property: property, //abbiamo anche il valore reale
+                playersArrayJson: JSON.stringify(players),
+                propertiesJson: JSON.stringify(properties),
+                propertyIndex: property.index,
                 highestBid: currentBid,
-                whoAmI: turn,
-                numberOfTheSameGroup: getPropertyWithSameColor(turn, property.groupNumber)
+                whoAmI: currentBidder,
+                numberOfTheSameGroup: getPropertyWithSameColor(currentBidder, property.groupNumber)
             },
             success: function (data) {
                 console.log(data);

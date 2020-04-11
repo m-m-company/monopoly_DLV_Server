@@ -176,7 +176,7 @@ function Game() {
                 var p = player[currentbidder];
 
                 if (!p.human) {
-                    var bid = p.AI.bid(auctionproperty, highestbid);
+                    var bid = p.AI.bid(auctionproperty, highestbid, currentbidder);
 
                     if (bid === -1 || highestbid >= p.money) {
                         p.bidding = false;

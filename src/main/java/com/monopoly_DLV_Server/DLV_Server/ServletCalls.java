@@ -144,13 +144,24 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/auction")
-    public Integer auction(String playersArrayJson, String property, Integer highestBid, Integer whoAmI, Integer sameGroup) {
+    public Integer auction(String playersArrayJson, String propertiesJson, Integer propertyIndex, Integer highestBid,
+                           Integer whoAmI, Integer numberOfTheSameGroup) {
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersArrayJson, Player.class);
-        Object p = JsonConverter.getInstance().getObject(property, Property.class);
+        ArrayList<Object> properties = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        Object p = new Number(propertyIndex, "propertyIndex");
         Object highBid = new Number(highestBid, "highestBid");
         Object mySelf = new Number(whoAmI, "mySelf");
-        Object sg = new Number(sameGroup, "sameGroup");
+        Object sg = new Number(numberOfTheSameGroup, "sameGroup");
+        int range = 0;
+        for (Object player : players) {
+            if (((Player) player).getIndex() == whoAmI) {
+                range = ((Player) player).getMoney();
+            }
+        }
+        Object limit = new Number((int) (range * 0.30), "limit");
         ArrayList<Object> facts = new ArrayList<>(players);
+        facts.addAll(properties);
+        facts.add(limit);
         facts.add(p);
         facts.add(highBid);
         facts.add(mySelf);
