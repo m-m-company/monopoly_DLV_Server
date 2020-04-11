@@ -5,20 +5,4 @@
 % number(value, "sameGroup") how many prop of the same group I have
 % output: number(value, "offer")
 
-myMoney(Money) :- player(_,_,Money,_,_,Index), number(Index, "mySelf").
-imTheKing :- #max{M: player(_,_,M,_,_,Index), number(X,"mySelf"), Index != X} = M, myMoney(Money), Money - M >= 200.
-realPrice(X) :- property(_,_,_,_,_,_,X,_,_).
-
-canBid :- number(X, "highestBid"), myMoney(Y), X < Y.
-bid :- imTheKing, canBid.
-bid :- mustHaveIt.
-notBid :- realPrice(X), number(Y, "highestBid"), X-Y>0, X-Y<30, not imTheKing.
-overRP :- realPrice(X), number(Y, "highestBid"), Y>X.
-mustHaveIt :- number(X, "sameGroup"), X>=2.
-
-% non so se funziona...
-number(-1, "offer") :- notBid.
-
-number(X, "offer") :- canBid, number(HB, "highestBid"), X = HB+20, not overRP.
-number(X, "offer") :- canBid, number(HB, "highestBid"), X = HB+5, overRP.
-number(X, "offer") :- mustHaveIt, number(HB, "highestBid"), X = HB + 100, myMoney(Y), Y>X.
+bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(I, "mySelf"), I = Index, Value<M.

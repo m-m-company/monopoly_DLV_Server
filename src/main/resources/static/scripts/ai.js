@@ -250,49 +250,23 @@ function AIDlv2(p) {
         let propertiesTradeJson;
         myProperties.length === 0 ? myPropertiesJson = "empty" : myPropertiesJson = JSON.stringify(myProperties);
         propertiesTrade.length === 0 ? propertiesTradeJson = "empty" : propertiesTradeJson = JSON.stringify(propertiesTrade);
+        let returnValue = true;
         $.ajax({
             type: "GET",
             url: "/acceptTrade",
             data: {
-                money : tradeObj.getMoney(),
-                myPropertiesJson : myPropertiesJson,
-                propertiesTradeJson : propertiesTradeJson,
-                owner : tradeObj.getRecipient(),
-                communityChestJailCard : tradeObj.getCommunityChestJailCard(),
-                chanceJailCard : tradeObj.getChanceJailCard()
+                money: tradeObj.getMoney(),
+                myPropertiesJson: myPropertiesJson,
+                propertiesTradeJson: propertiesTradeJson,
+                owner: tradeObj.getRecipient().index,
+                communityChestJailCard: tradeObj.getCommunityChestJailCard(),
+                chanceJailCard: tradeObj.getChanceJailCard()
             },
             success: function (data) {
-                //TODO: Gestire l'output
+                returnValue = data;
             }
         });
-        /*var tradeValue = 0;
-        var money = tradeObj.getMoney();
-        var initiator = tradeObj.getInitiator();
-        var recipient = tradeObj.getRecipient();
-        var property = [];
-
-        tradeValue += 10 * tradeObj.getCommunityChestJailCard();
-        tradeValue += 10 * tradeObj.getChanceJailCard();
-
-        tradeValue += money;
-
-        for (var i = 0; i < 40; i++) {
-            property[i] = tradeObj.getProperty(i);
-            tradeValue += tradeObj.getProperty(i) * square[i].price * (square[i].mortgage ? 0.5 : 1);
-        }
-
-        console.log(tradeValue);
-
-        var proposedMoney = 25 - tradeValue + money;
-
-        if (tradeValue > 25) {
-            return true;
-        } else if (tradeValue >= -50 && initiator.money > proposedMoney) {
-
-            return new Trade(initiator, recipient, proposedMoney, property, tradeObj.getCommunityChestJailCard(), tradeObj.getChanceJailCard());
-        }
-
-        return false;*/
+        return returnValue;
     };
 
     // This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
@@ -306,7 +280,7 @@ function AIDlv2(p) {
                 playerJson: JSON.stringify(p)
             },
             success: (data) => {
-                data.map((house) => {
+                data.map(house => {
                     for (let i = 0; i < house.times; ++i) {
                         buyHouse(house.index);
                     }
