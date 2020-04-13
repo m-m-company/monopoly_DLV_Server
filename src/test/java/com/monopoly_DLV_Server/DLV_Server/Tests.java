@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
         BuyOrNotBuyTests.class,
         UnmortgageTests.class,
         PayDebtTests.class,
-        AcceptTradeTests.class
+        AcceptTradeTests.class,
+        AuctionTests.class
 })
 public class Tests{}

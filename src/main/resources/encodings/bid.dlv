@@ -9,17 +9,17 @@
 
 preferredGroup(1). preferredGroup(2).
 
-% proprietà all'asta
+% proprietà allasta
 auctionProperty(Index, Group, Price) :- property(_,_,_,_,_,Group,Price,_,Index), number(Index, "propertyIndex").
 
 % join tra i player e le property
-playerProperty(Player, Property) :- player(_,_,_,_,_,_,_,_,Player), property(_,Player,_,_,_,Property).
+playerProperty(Player, Property) :- player(_,_,_,_,_,Player), property(_,Player,_,_,_,_,_,_,Property).
 
-% per ogni player ci salviamo il numero di proprietà dello stesso gruppo rispetto alla proprietà dell'asta
+% per ogni player ci salviamo il numero di proprietà dello stesso gruppo rispetto alla proprietà dellasta
 playerNumberOfGroupProperty(Player, Number) :- player(_,_,_,_,_,Player), not number(Player, "mySelf"), auctionProperty(_,G,_), #count{P : property(_,Player,_,_,_,G,_,_,P)} = Number.
 
 % se non posso economicamente non faccio nulla
-bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(I, "mySelf"), I = Index, Value<M.
+bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(Index, "mySelf"), Value<M.
 
 % casi in cui non biddo
 notBid :- number(V, "highestBid"), number(L, "limit"), V > L.

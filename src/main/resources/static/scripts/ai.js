@@ -402,6 +402,7 @@ function AIDlv2(p) {
             type: "GET",
             url: "/auction",
             data: {
+                //TODO: Dobbiamo fare attenzione all'owner della property
                 //TODO: Vanno passati denaro, proprietà in questione, offerta più alta, valore reale, ecc.
                 //TODO: forse conviene passare tutti i giocatori che hanno bidding a true così da poter fare una roba aggressiva anche se in "perdita", tipo tu hai 200, io 300 e sparo un prezzo più alto di 200
                 playersArrayJson: JSON.stringify(players),
