@@ -1,8 +1,8 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
-import com.monopoly_DLV_Server.DLV_Server.wrappers.BooleanValue;
-import com.monopoly_DLV_Server.DLV_Server.wrappers.Number;
+import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +30,7 @@ public class ServletCalls {
         facts.add(property);
         facts.add(number);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "buyOrNotBuy.dlv");
-        for (AnswerSet a :
-                answerSets) {
+        for (AnswerSet a : answerSets) {
             for (Object o : a.getAtoms()) {
                 if (o instanceof BooleanValue) {
                     return Boolean.valueOf(((BooleanValue) o).getBooleanValue());
@@ -63,12 +62,64 @@ public class ServletCalls {
     }
 
     @GetMapping(value = "/proposeTrade")
-    public String trade(String playersJson, String propertiesJson) {
-        ArrayList<Object> facts = JsonConverter.getInstance().getArray(playersJson, Player.class);
-        ArrayList<Object> properties = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
-        facts.addAll(properties);
+    public Trade proposeTrade(Integer whoAmI, String propertiesJson, String playersJson) {
+        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        ArrayList<Object> players = JsonConverter.getInstance().getArray(playersJson, Player.class);
+        System.out.println(players);
+        facts.addAll(players);
+        for (Object p : players) {
+            Player player = (Player) p;
+            if (player.isChanceJailCard()) {
+                facts.add(new Number(player.getIndex(), "chanceJailCard"));
+            }
+            if (player.isCommunityChestJailCard()) {
+                facts.add(new Number(player.getIndex(), "communityChestJailCard"));
+            }
+        }
+        facts.add(new Number(whoAmI, "whoAmI"));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "proposeTrade.dlv");
-        return "proposeTradeResponse";
+        boolean trade = false;
+        int money = 0;
+        int recipient = -1;
+        int communityChestJailCard = 0;
+        int chanceJailCard = 0;
+        ArrayList<Integer> propertyOffered = new ArrayList<>();
+        ArrayList<Integer> propertyRequested = new ArrayList<>();
+        for (AnswerSet answerSet : answerSets) {
+            try {
+                for (Object o : answerSet.getAtoms()) {
+                    if (o instanceof Number) {
+                        if (((Number) o).semantic.equals("recipient")) {
+                            recipient = ((Number) o).number;
+                        }
+                        if (((Number) o).semantic.equals("money")) {
+                            money = ((Number) o).number;
+                        }
+                        if (((Number) o).semantic.equals("propertyOffered")) {
+                            propertyOffered.add(((Number) o).number);
+                        }
+                        if (((Number) o).semantic.equals("propertyRequested")) {
+                            propertyRequested.add(((Number) o).number);
+                        }
+                        if (((Number) o).semantic.equals("communityChestJailCardTraded")) {
+                            communityChestJailCard = ((Number) o).number;
+                        }
+                        if (((Number) o).semantic.equals("chanceJailCardTraded")) {
+                            chanceJailCard = ((Number) o).number;
+                        }
+                    }
+                    if (o instanceof BooleanValue) {
+                        trade = Boolean.parseBoolean(((BooleanValue) o).getBooleanValue());
+                    }
+                }
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+        if (trade) {
+            return new Trade(whoAmI, recipient, money, propertyOffered, propertyRequested, communityChestJailCard, chanceJailCard);
+        }
+        return new Trade();
     }
 
     @GetMapping(value = "/acceptTrade")

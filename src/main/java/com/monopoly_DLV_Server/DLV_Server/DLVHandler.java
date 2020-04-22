@@ -1,8 +1,8 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
-import com.monopoly_DLV_Server.DLV_Server.wrappers.BooleanValue;
-import com.monopoly_DLV_Server.DLV_Server.wrappers.Number;
+import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
+import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;

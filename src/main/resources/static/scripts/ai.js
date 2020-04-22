@@ -312,42 +312,24 @@ function AIDlv2(p) {
     // This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
     this.onLand = function () {
-        var proposedTrade;
-        var property = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        var railroadIndexes = [5, 15, 25, 35];
-        var requestedRailroad;
-        var offeredUtility;
-        var s;
-
-        // If AI owns exactly one utility, try to trade it for a railroad.
-        for (var i = 0; i < 4; i++) {
-            s = square[railroadIndexes[i]];
-
-            if (s.owner !== 0 && s.owner !== p.index) {
-                requestedRailroad = s.index;
-                break;
-            }
-        }
-
-        if (square[12].owner === p.index && square[28].owner !== p.index) {
-            offeredUtility = 12;
-        } else if (square[28].owner === p.index && square[12].owner !== p.index) {
-            offeredUtility = 28;
-        }
-
-        if (utilityForRailroadFlag && game.getDie(1) !== game.getDie(2) && requestedRailroad && offeredUtility) {
-            utilityForRailroadFlag = false;
-            property[requestedRailroad] = -1;
-            property[offeredUtility] = 1;
-
-            proposedTrade = new Trade(p, player[square[requestedRailroad].owner], 0, property, 0, 0)
-
-            game.trade(proposedTrade);
-            return true;
-        }
-
-        return false;
-    }; //TODO: capire che fa
+        let returnValue = false;
+        $.ajax({
+            type: "GET",
+            url: "/proposeTrade",
+            data: {
+                whoAmI: turn,
+                propertiesJson: JSON.stringify(square.filter(p => p.owner !== 0)),
+                playersJson: JSON.stringify(player.filter(p => p.color !== ""))
+            },
+            success: function (data) {
+                if (data.recipient !== 0) {
+                    //TODO: fare game.trade(new Trade(...))
+                }
+            },
+            async: false
+        });
+        return returnValue;
+    }; //TODO: success method
 
     // Determine whether to post bail/use get out of jail free card (if in possession).
     // Return: boolean: true to post bail/use card.

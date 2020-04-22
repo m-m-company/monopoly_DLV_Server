@@ -1,0 +1,17 @@
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
+% player(name, position, money, jail, bidding, index)
+% number(value, "whoAmI"), my index
+% number(playerIndex, "chanceJailCard")
+% number(playerIndex, "communityChestJailCard")
+
+% OUTPUT :
+% booleanValue(true o false) se si decide o no di fare un'offerta
+% number(value, "recipient")
+% number(value, "money")
+% number(value, "propertyOffered")
+% number(value, "propertyRequested")
+% number(value, "communityChestJailCardTraded")
+% number(value, "chanceJailCardTraded")
+
+% proprietà possedute dall'attuale player
+myProperty(P) :- property(_,O,_,_,_,_,_,_,P), number(O,"whoAmI").
