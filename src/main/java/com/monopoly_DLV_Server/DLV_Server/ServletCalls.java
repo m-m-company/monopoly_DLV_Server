@@ -4,14 +4,14 @@ import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 @RestController
 @Slf4j
@@ -63,60 +63,68 @@ public class ServletCalls {
 
     @GetMapping(value = "/proposeTrade")
     public Trade proposeTrade(Integer whoAmI, String propertiesJson, String playersJson) {
-        ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
+        ArrayList<Object> properties = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersJson, Player.class);
-        facts.addAll(players);
-        for (Object p : players) {
-            Player player = (Player) p;
-            if (player.isChanceJailCard()) {
-                facts.add(new Number(player.getIndex(), "chanceJailCard"));
-            }
-            if (player.isCommunityChestJailCard()) {
-                facts.add(new Number(player.getIndex(), "communityChestJailCard"));
+        Object mySelf = null;
+        for (Object o : players) {
+            if (((Player) o).getIndex() == whoAmI) {
+                mySelf = o;
+                players.remove(o);
+                break;
             }
         }
-        facts.add(new Number(whoAmI, "whoAmI"));
-        List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "proposeTrade.dlv");
-        boolean trade = false;
-        int money = 0;
-        int recipient = -1;
-        int communityChestJailCard = 0;
-        int chanceJailCard = 0;
-        ArrayList<Integer> propertyOffered = new ArrayList<>();
-        ArrayList<Integer> propertyRequested = new ArrayList<>();
-        for (AnswerSet answerSet : answerSets) {
-            try {
-                for (Object o : answerSet.getAtoms()) {
-                    if (o instanceof Number) {
-                        if (((Number) o).semantic.equals("\"recipient\"")) {
-                            recipient = ((Number) o).number;
-                        }
-                        if (((Number) o).semantic.equals("\"money\"")) {
-                            money = ((Number) o).number;
-                        }
-                        if (((Number) o).semantic.equals("\"propertyOffered\"")) {
-                            propertyOffered.add(((Number) o).number);
-                        }
-                        if (((Number) o).semantic.equals("\"propertyRequested\"")) {
-                            propertyRequested.add(((Number) o).number);
-                        }
-                        if (((Number) o).semantic.equals("\"communityChestJailCardTraded\"")) {
-                            communityChestJailCard = ((Number) o).number;
-                        }
-                        if (((Number) o).semantic.equals("\"chanceJailCardTraded\"")) {
-                            chanceJailCard = ((Number) o).number;
-                        }
-                    }
-                    if (o instanceof BooleanValue) {
-                        trade = Boolean.parseBoolean(((BooleanValue) o).getBooleanValue());
-                    }
+        assert mySelf != null;
+        ArrayList<Object> myProperties = new ArrayList<>();
+        for (Object property : properties) {
+            if (((Property) property).getOwner().equals(whoAmI) && ((Property) property).getHouse() == 0) {
+                myProperties.add(property);
+            }
+        }
+        properties.removeAll(myProperties);
+        ArrayList<Object> facts = new ArrayList<>(myProperties);
+        facts.add(mySelf);
+        facts.add(new Number((int) (((Player) mySelf).getMoney() * 0.6), "limit"));
+        players.sort(Comparator.comparingInt(player -> ((Player) player).getMoney()));
+        for (Object player : players) {
+            ArrayList<Object> propertiesInvolved = new ArrayList<>();
+            for (Object property : properties) {
+                if (((Property) property).getOwner().equals(((Player) player).getIndex()) && ((Property) property).getHouse() == 0) {
+                    propertiesInvolved.add(property);
                 }
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
-                e.printStackTrace();
             }
-        }
-        if (trade) {
-            return new Trade(whoAmI, recipient, money, propertyOffered, propertyRequested, communityChestJailCard, chanceJailCard);
+            facts.addAll(propertiesInvolved);
+            List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "proposeTrade.dlv");
+            boolean trade = false;
+            int money = 0;
+            ArrayList<Integer> propertyOffered = new ArrayList<>();
+            ArrayList<Integer> propertyRequested = new ArrayList<>();
+            for (AnswerSet answerSet : answerSets) {
+                try {
+                    for (Object o : answerSet.getAtoms()) {
+                        if (o instanceof Number) {
+                            if (((Number) o).semantic.equals("\"money\"")) {
+                                money = ((Number) o).number;
+                            }
+                            if (((Number) o).semantic.equals("\"propertyOffered\"")) {
+                                propertyOffered.add(((Number) o).number);
+                            }
+                            if (((Number) o).semantic.equals("\"propertyRequested\"")) {
+                                propertyRequested.add(((Number) o).number);
+                            }
+                        }
+                        if (o instanceof BooleanValue) {
+                            trade = Boolean.parseBoolean(((BooleanValue) o).getBooleanValue());
+                        }
+                    }
+                } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (trade) {
+                return new Trade(whoAmI, ((Player) player).getIndex(), money, propertyOffered, propertyRequested, 0, 0);
+            }
+            facts.remove(player);
+            facts.removeAll(propertiesInvolved);
         }
         return new Trade();
     }
