@@ -65,7 +65,6 @@ public class ServletCalls {
     public Trade proposeTrade(Integer whoAmI, String propertiesJson, String playersJson) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersJson, Player.class);
-        System.out.println(players);
         facts.addAll(players);
         for (Object p : players) {
             Player player = (Player) p;
@@ -89,22 +88,22 @@ public class ServletCalls {
             try {
                 for (Object o : answerSet.getAtoms()) {
                     if (o instanceof Number) {
-                        if (((Number) o).semantic.equals("recipient")) {
+                        if (((Number) o).semantic.equals("\"recipient\"")) {
                             recipient = ((Number) o).number;
                         }
-                        if (((Number) o).semantic.equals("money")) {
+                        if (((Number) o).semantic.equals("\"money\"")) {
                             money = ((Number) o).number;
                         }
-                        if (((Number) o).semantic.equals("propertyOffered")) {
+                        if (((Number) o).semantic.equals("\"propertyOffered\"")) {
                             propertyOffered.add(((Number) o).number);
                         }
-                        if (((Number) o).semantic.equals("propertyRequested")) {
+                        if (((Number) o).semantic.equals("\"propertyRequested\"")) {
                             propertyRequested.add(((Number) o).number);
                         }
-                        if (((Number) o).semantic.equals("communityChestJailCardTraded")) {
+                        if (((Number) o).semantic.equals("\"communityChestJailCardTraded\"")) {
                             communityChestJailCard = ((Number) o).number;
                         }
-                        if (((Number) o).semantic.equals("chanceJailCardTraded")) {
+                        if (((Number) o).semantic.equals("\"chanceJailCardTraded\"")) {
                             chanceJailCard = ((Number) o).number;
                         }
                     }
@@ -209,6 +208,9 @@ public class ServletCalls {
                 range = ((Player) player).getMoney();
             }
         }
+        if (range < highestBid) {
+            return -1;
+        }
         Object limit = new Number((int) (range * 0.30), "limit");
         ArrayList<Object> facts = new ArrayList<>(players);
         facts.addAll(properties);
@@ -222,8 +224,10 @@ public class ServletCalls {
             try {
                 for (Object o : a.getAtoms()) {
                     if (o instanceof Number) {
-                        if (((Number) o).getSemantic().equals("offer"))
-                            return ((Number) o).getNumber();
+                        System.out.println(o);
+                        if (((Number) o).semantic.equals("\"offer\"")) {
+                            return ((Number) o).number;
+                        }
                     }
                 }
             } catch (Exception e) {

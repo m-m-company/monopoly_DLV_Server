@@ -28,7 +28,7 @@ public class AuctionTests {
         Assert.assertEquals(expected, result);
     }
 
-    /*@Test
+    @Test
     public void dontWantOffer() {
         Property property1 = new Property("name", 10, "false", 0, 0, 4, 200, 0, 0);
         ArrayList<Property> properties = new ArrayList<>(Collections.singleton(property1));
@@ -39,6 +39,6 @@ public class AuctionTests {
         Integer result = servletCalls.auction(playersJson, propertiesJson, 0, 150, 0, 2);
         Integer expected = 0;
         Assert.assertEquals(expected, result);
-    }*/
+    }
 
 }

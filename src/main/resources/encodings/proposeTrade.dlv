@@ -14,4 +14,6 @@
 % number(value, "chanceJailCardTraded")
 
 % proprietà possedute dall'attuale player
-myProperty(P) :- property(_,O,_,_,_,_,_,_,P), number(O,"whoAmI").
+myProperty(P,G) :- property(_,O,_,_,_,G,_,_,P), number(O,"whoAmI").
+
+groupNumberOfProperty(G,N) :- myProperty(P,G), #count{X : myProperty(X,G)} = N.

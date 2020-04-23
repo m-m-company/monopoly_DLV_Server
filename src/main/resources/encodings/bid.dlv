@@ -9,7 +9,7 @@
 
 preferredGroup(1). preferredGroup(2).
 
-% proprietà allasta
+% proprietà all'asta
 auctionProperty(Index, Group, Price) :- property(_,_,_,_,_,Group,Price,_,Index), number(Index, "propertyIndex").
 
 % join tra i player e le property
@@ -23,7 +23,8 @@ bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(Ind
 
 % casi in cui non biddo
 notBid :- number(V, "highestBid"), number(L, "limit"), V > L.
-notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid"), Bid > P, #max{N : playerNumberOfGroupProperty(_,N)} = 0.
+interestingForSomeone :- playerNumberOfGroupProperty(_,N), N > 0.
+notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid"), Bid > P, not interestingForSomeone.
 notBid :- auctionProperty(_,G,P), preferredGroup(G), number(Bid, "highestBid"), Bid > P + 200.
 
 % possibili offerte in base ai casi
