@@ -4,14 +4,12 @@ import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
-import it.unical.mat.embasp.languages.asp.AnswerSets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Predicate;
 
 @RestController
 @Slf4j
@@ -186,6 +184,7 @@ public class ServletCalls {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(new Number(actualMoney * -1, "moneyToReach"));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "payDebt.dlv");
+        System.out.println(answerSets.toString());
         for (AnswerSet answerSet : answerSets) {
             try {
                 for (Object o : answerSet.getAtoms()) {
@@ -197,7 +196,6 @@ public class ServletCalls {
                 e.printStackTrace();
             }
         }
-        log.error("Mortgage: " + actionProperties);
         return actionProperties;
     }
 

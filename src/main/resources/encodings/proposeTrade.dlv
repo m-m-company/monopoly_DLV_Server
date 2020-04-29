@@ -38,7 +38,8 @@ propertyTradeable(I,P) :- myProperty(I,G), property(_,_,"true",_,_,G,Price,_,I),
 propertyTradeable(I,P) :- myProperty(I,G), property(_,_,"false",_,_,G,P,_,I), G != 1, G != 2, groupNumberOfProperty(G,1).
 
 % tutte le proprietà che POTREMMO volere
-interestingProperty(I,P,M,G) :- groupNumberOfProperty(G,_), property(_,O,M,_,_,G,P,_,I), not number(O, "whoAmI").
+group(G) :- groupNumberOfProperty(G,_).
+interestingProperty(I,P,M,G) :- group(G), property(_,O,M,_,_,G,P,_,I), not number(O, "whoAmI").
 
 tradeMoney(P) | tradeProperty(P) | notTrade(P) :- interestingProperty(P,_,_,_).
 
@@ -57,7 +58,8 @@ notExistsCounterPart(B) :- interestingProperty(B,_,_,_), #count{X : propertyTrad
 :- tradeProperty(P), notExistsCounterPart(P).
 :- propertyCounterPart(A,B), propertyCounterPart(C,B), A != C.
 
-%number(V,"money") :- tradeMoney(_), #sum{X,P : tradeMoney(P), propertyOffer(X,P)} = V.
+willTradeMoney :- tradeMoney(_).
+number(V,"money") :- willTradeMoney, #sum{X,P : tradeMoney(P), propertyOffer(X,P)} = V.
 %:- number(V,"money"), number(L,"limit"), V > L.
 
 %number(A,"propertyOffered") :- propertyCounterPart(A,_).

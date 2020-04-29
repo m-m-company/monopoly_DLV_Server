@@ -312,7 +312,8 @@ function AIDlv2(p) {
     // This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
     this.onLand = function () {
-        let returnValue = false;
+        return false;
+        /*let returnValue = false;
         $.ajax({
             type: "GET",
             url: "/proposeTrade",
@@ -328,8 +329,8 @@ function AIDlv2(p) {
             },
             async: false
         });
-        return returnValue;
-    }; //TODO: success method
+        return returnValue;*/
+    }; //TODO: tutto
 
     // Determine whether to post bail/use get out of jail free card (if in possession).
     // Return: boolean: true to post bail/use card.
@@ -341,7 +342,7 @@ function AIDlv2(p) {
         } else {
             return false;
         }
-    }; //TODO: Ajax call
+    };
 
     // Mortgage enough properties to pay debt.
     // Return: void: don't return anything, just call the functions mortgage()/sellhouse()
@@ -364,12 +365,12 @@ function AIDlv2(p) {
             },
             async: false
         });
-    }; //TODO: Testare
+    }; //DONE
 
     // Determine what to bid during an auction.
     // Return: integer: -1 for exit auction, 0 for pass, a positive value for the bid.
     this.bid = function (property, currentBid, currentBidder) {
-        var bid;
+        let returnValue = -1;
         let players = player.filter(p => p.bidding);
         let properties = [];
         players.map(player => {
@@ -384,9 +385,6 @@ function AIDlv2(p) {
             type: "GET",
             url: "/auction",
             data: {
-                //TODO: Dobbiamo fare attenzione all'owner della property
-                //TODO: Vanno passati denaro, proprietà in questione, offerta più alta, valore reale, ecc.
-                //TODO: forse conviene passare tutti i giocatori che hanno bidding a true così da poter fare una roba aggressiva anche se in "perdita", tipo tu hai 200, io 300 e sparo un prezzo più alto di 200
                 playersArrayJson: JSON.stringify(players),
                 propertiesJson: JSON.stringify(properties),
                 propertyIndex: property.index,
@@ -395,19 +393,11 @@ function AIDlv2(p) {
                 numberOfTheSameGroup: getPropertyWithSameColor(currentBidder, property.groupNumber)
             },
             success: function (data) {
-                console.log(data);
-                //TODO: -1 for exit auction, 0 for pass, a positive value for the bid.
+                returnValue = data;
             },
             async: false
         });
-        bid = currentBid + Math.round(Math.random() * 20 + 10);
-
-        if (p.money < bid + 50 || bid > square[property].price * 1.5) {
-            return -1;
-        } else {
-            return bid;
-        }
-
-    }
+        return returnValue;
+    } //TODO: testare
 
 }
