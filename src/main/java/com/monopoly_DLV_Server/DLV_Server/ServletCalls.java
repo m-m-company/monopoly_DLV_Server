@@ -1,15 +1,17 @@
 package com.monopoly_DLV_Server.DLV_Server;
 
-import com.monopoly_DLV_Server.DLV_Server.DTO.*;
-import com.monopoly_DLV_Server.DLV_Server.DTO.BooleanValue;
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
+import com.monopoly_DLV_Server.DLV_Server.DTO.*;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -140,8 +142,7 @@ public class ServletCalls {
         Number m = null;
         if (money >= 0) {
             m = new Number(money, "offered");
-        }
-        else {
+        } else {
             m = new Number(-money, "requested");
         }
         facts.add(m);
@@ -226,11 +227,13 @@ public class ServletCalls {
         facts.add(mySelf);
         facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
+        log.info(facts.toString());
+        log.info(answerSets.toString());
         for (AnswerSet a : answerSets) {
             try {
                 for (Object o : a.getAtoms()) {
+                    System.out.println(o);
                     if (o instanceof Number) {
-                        System.out.println(o);
                         if (((Number) o).semantic.equals("\"offer\"")) {
                             return ((Number) o).number;
                         }
@@ -243,4 +246,9 @@ public class ServletCalls {
         return -1;
     }
 
+    @GetMapping(value = "/postBail")
+    public Boolean postBail() {
+
+        return true;
+    }
 }

@@ -11,4 +11,5 @@ import org.junit.runners.Suite;
         AcceptTradeTests.class,
         AuctionTests.class
 })
-public class Tests{}
+public class Tests {
+}

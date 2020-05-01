@@ -28,10 +28,15 @@ notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid
 notBid :- auctionProperty(_,G,P), preferredGroup(G), number(Bid, "highestBid"), Bid > P + 200.
 
 % possibili offerte in base ai casi
-probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.
-probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G), O = Bid + 50.
-probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
-probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
+%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.
+%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G), O = Bid + 50.
+%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
+%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
+
+add10(10) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid").
+add50(50) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G).
+add15N(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
+add15(15) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
 
 % offerta finale
 number(P, "offer") :- bid, #max{O : probablyOffer(O)} = P.
