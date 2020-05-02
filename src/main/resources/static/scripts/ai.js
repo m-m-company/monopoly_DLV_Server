@@ -306,14 +306,10 @@ function AIDlv2(p) {
         return false;
     }; //DONE
 
-    var utilityForRailroadFlag = true; // Don't offer this trade more than once.
-
-
     // This function is called every time the AI lands on a square. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
     this.onLand = function () {
-        return false;
-        /*let returnValue = false;
+        let returnValue = false;
         $.ajax({
             type: "GET",
             url: "/proposeTrade",
@@ -324,13 +320,13 @@ function AIDlv2(p) {
             },
             success: function (data) {
                 if (data.recipient !== 0) {
-                    //TODO: fare game.trade(new Trade(...))
+                    console.log(data);
                 }
             },
             async: false
         });
-        return returnValue;*/
-    }; //TODO: tutto
+        return returnValue;
+    }; //TODO: testare
 
     // Determine whether to post bail/use get out of jail free card (if in possession).
     // Return: boolean: true to post bail/use card.
@@ -398,6 +394,6 @@ function AIDlv2(p) {
             async: false
         });
         return returnValue;
-    } //TODO: testare
+    }
 
 }

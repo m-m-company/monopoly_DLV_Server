@@ -9,7 +9,8 @@ import org.junit.runners.Suite;
         UnmortgageTests.class,
         PayDebtTests.class,
         AcceptTradeTests.class,
-        AuctionTests.class
+        AuctionTests.class,
+        ProposeTradeTests.class
 })
 public class Tests {
 }

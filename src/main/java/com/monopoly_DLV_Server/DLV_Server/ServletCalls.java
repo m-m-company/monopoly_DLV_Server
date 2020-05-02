@@ -2,6 +2,10 @@ package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.PropertyCounterPart;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.PropertyOffer;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.TradeMoney;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.TradeProperty;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,6 +87,7 @@ public class ServletCalls {
         properties.removeAll(myProperties);
         ArrayList<Object> facts = new ArrayList<>(myProperties);
         facts.add(mySelf);
+        facts.add(new Number(whoAmI, "whoAmI"));
         facts.add(new Number((int) (((Player) mySelf).getMoney() * 0.6), "limit"));
         players.sort(Comparator.comparingInt(player -> ((Player) player).getMoney()));
         for (Object player : players) {
@@ -94,33 +99,34 @@ public class ServletCalls {
             }
             facts.addAll(propertiesInvolved);
             List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "proposeTrade.dlv");
-            boolean trade = false;
+            String trade = "false";
             int money = 0;
             ArrayList<Integer> propertyOffered = new ArrayList<>();
             ArrayList<Integer> propertyRequested = new ArrayList<>();
             for (AnswerSet answerSet : answerSets) {
                 try {
                     for (Object o : answerSet.getAtoms()) {
-                        if (o instanceof Number) {
-                            if (((Number) o).semantic.equals("\"money\"")) {
-                                money = ((Number) o).number;
-                            }
-                            if (((Number) o).semantic.equals("\"propertyOffered\"")) {
-                                propertyOffered.add(((Number) o).number);
-                            }
-                            if (((Number) o).semantic.equals("\"propertyRequested\"")) {
-                                propertyRequested.add(((Number) o).number);
-                            }
+                        if (o instanceof PropertyOffer) {
+                            money += ((PropertyOffer) o).price;
+                        }
+                        if (o instanceof TradeMoney) {
+                            propertyRequested.add(((TradeMoney) o).property);
+                        }
+                        if (o instanceof TradeProperty) {
+                            propertyRequested.add(((TradeProperty) o).property);
+                        }
+                        if (o instanceof PropertyCounterPart) {
+                            propertyOffered.add(((PropertyCounterPart) o).propertyOffered);
                         }
                         if (o instanceof BooleanValue) {
-                            trade = Boolean.parseBoolean(((BooleanValue) o).getBooleanValue());
+                            trade = ((BooleanValue) o).getBooleanValue();
                         }
                     }
                 } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
-            if (trade) {
+            if (trade.equals("\"true\"")) {
                 return new Trade(whoAmI, ((Player) player).getIndex(), money, propertyOffered, propertyRequested, 0, 0);
             }
             facts.remove(player);

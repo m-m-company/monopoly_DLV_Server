@@ -2,6 +2,10 @@ package com.monopoly_DLV_Server.DLV_Server;
 
 import com.monopoly_DLV_Server.DLV_Server.DTO.Number;
 import com.monopoly_DLV_Server.DLV_Server.DTO.*;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.PropertyCounterPart;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.PropertyOffer;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.TradeMoney;
+import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.TradeProperty;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -59,6 +63,10 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(BuyHouse.class);
         ASPMapper.getInstance().registerClass(Unmortgage.class);
         ASPMapper.getInstance().registerClass(ActionProperty.class);
+        ASPMapper.getInstance().registerClass(PropertyCounterPart.class);
+        ASPMapper.getInstance().registerClass(TradeProperty.class);
+        ASPMapper.getInstance().registerClass(TradeMoney.class);
+        ASPMapper.getInstance().registerClass(PropertyOffer.class);
     }
 
     public static DLVHandler getInstance() {
