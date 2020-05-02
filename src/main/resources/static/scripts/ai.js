@@ -265,7 +265,7 @@ function AIDlv2(p) {
             success: function (data) {
                 returnValue = data
             },
-            async : false
+            async: false
         });
         return returnValue;
     }; //DONE
@@ -374,20 +374,20 @@ function AIDlv2(p) {
         let players = player.filter(p => p.bidding);
         let properties = [];
         players.map(player => {
-           square.map(s => {
-              if (player.index === s.owner) {
-                  properties.push(s);
-              }
-           });
+            square.map(s => {
+                if (player.index === s.owner && s.owner !== 0) {
+                    properties.push(s);
+                }
+            });
         });
-        properties.push(property);
+        properties.push(square[property]);
         $.ajax({
             type: "GET",
             url: "/auction",
             data: {
                 playersArrayJson: JSON.stringify(players),
                 propertiesJson: JSON.stringify(properties),
-                propertyIndex: property.index,
+                propertyIndex: property,
                 highestBid: currentBid,
                 whoAmI: currentBidder,
                 numberOfTheSameGroup: getPropertyWithSameColor(currentBidder, property.groupNumber)
