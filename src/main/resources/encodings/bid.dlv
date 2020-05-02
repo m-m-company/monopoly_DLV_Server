@@ -45,8 +45,11 @@ bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(Ind
 % casi in cui non biddo
 notBid :- number(V, "highestBid"), number(L, "limit"), V > L.
 interestingForSomeone :- playerNumberOfGroupProperty(_,N), N > 0.
+interestingForSomeone :- number(Value, "sameGroup"), Value > 1.
 notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid"), Bid > P, not interestingForSomeone.
 notBid :- auctionProperty(_,G,P), preferredGroup(G), number(Bid, "highestBid"), Bid > P + 200.
+
+
 
 % possibili offerte in base ai casi
 probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.

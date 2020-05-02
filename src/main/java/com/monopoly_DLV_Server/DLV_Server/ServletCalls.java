@@ -234,6 +234,7 @@ public class ServletCalls {
         facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
         Number bestOffer = new Number(0, "\"offer\"");
+        log.info(answerSets.toString());
         for (AnswerSet a : answerSets) {
             try {
                 for (Object o : a.getAtoms()) {
