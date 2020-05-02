@@ -227,12 +227,9 @@ public class ServletCalls {
         facts.add(mySelf);
         facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
-        log.info(facts.toString());
         Number bestOffer = new Number(0, "\"offer\"");
         for (AnswerSet a : answerSets) {
             try {
-                log.info("ANSE " + a.toString());
-                log.info(a.getWeights().toString());
                 for (Object o : a.getAtoms()) {
                     if (o instanceof Number) {
                         if (((Number) o).semantic.equals("\"offer\"")) {
