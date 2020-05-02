@@ -228,20 +228,25 @@ public class ServletCalls {
         facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
         log.info(facts.toString());
-        log.info(answerSets.toString());
+        Number bestOffer = new Number(0, "\"offer\"");
         for (AnswerSet a : answerSets) {
             try {
+                log.info("ANSE " + a.toString());
+                log.info(a.getWeights().toString());
                 for (Object o : a.getAtoms()) {
-                    System.out.println(o);
                     if (o instanceof Number) {
                         if (((Number) o).semantic.equals("\"offer\"")) {
-                            return ((Number) o).number;
+                            if (((Number) o).getNumber() > bestOffer.getNumber()) {
+                                log.info(String.valueOf(((Number) o).getNumber()));
+                                bestOffer = (Number) o;
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return bestOffer.getNumber();
         }
         return -1;
     }

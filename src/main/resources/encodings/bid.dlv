@@ -7,6 +7,27 @@
 % number(value, "limit") limite di soldi da poter spendere
 % output: number(value, "offer")
 
+
+%property("name", -1, "false", 0, 0, 1, 200, 0, 0).
+%number(0, "propertyIndex").
+%property("name", 1, "false", 0, 0, 1, 200, 0, 1).
+%number(150, "highestBid").
+%number(0, "mySelf").
+%number(2, "sameGroup").
+%number(300, "limit").
+%player("name", 0, 500, "false","true", 0).
+%player("name", 0, 500, "false","true", 1).
+
+
+% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, index)
+% player(name, position, money, jail, bidding, index)
+% number(value, "propertyIndex")
+% number(value, "highestBid")
+% number(value, "mySelf"), my index
+% number(value, "sameGroup") how many prop of the same group I have
+% number(value, "limit") limite di soldi da poter spendere
+% output: number(value, "offer")
+
 preferredGroup(1). preferredGroup(2).
 
 % proprietà all'asta
@@ -16,7 +37,7 @@ auctionProperty(Index, Group, Price) :- property(_,_,_,_,_,Group,Price,_,Index),
 playerProperty(Player, Property) :- player(_,_,_,_,_,Player), property(_,Player,_,_,_,_,_,_,Property).
 
 % per ogni player ci salviamo il numero di proprietà dello stesso gruppo rispetto alla proprietà dellasta
-playerNumberOfGroupProperty(Player, Number) :- player(_,_,_,_,_,Player), not number(Player, "mySelf"), auctionProperty(_,G,_), #count{P : property(_,Player,_,_,_,G,_,_,P)} = Number.
+playerNumberOfGroupProperty(Player, Number) :- player(_,_,_,_,_,Player), not number(Player, "mySelf"), auctionProperty(_,G,_), Number = #count{P : property(_,Player,_,_,_,G,_,_,P)}.
 
 % se non posso economicamente non faccio nulla
 bid | notBid :- number(Value, "highestBid"), player(_,_,M,_,_,Index), number(Index, "mySelf"), Value<M.
@@ -28,16 +49,14 @@ notBid :- auctionProperty(_,G,P), not preferredGroup(G), number(Bid, "highestBid
 notBid :- auctionProperty(_,G,P), preferredGroup(G), number(Bid, "highestBid"), Bid > P + 200.
 
 % possibili offerte in base ai casi
-%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.
-%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G), O = Bid + 50.
-%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
-%probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), O = Bid + 10.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G), O = Bid + 50.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
+probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
 
-add10(10) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid").
-add50(50) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), auctionProperty(_,G,_), preferredGroup(G).
-add15N(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), number(N, "sameGroup"), N > 0, O = Bid + 15*N.
-add15(15) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), playerNumberOfGroupProperty(_,N), N > 0, O = Bid + 15.
 
 % offerta finale
-number(P, "offer") :- bid, #max{O : probablyOffer(O)} = P.
+number(P, "offer") :- bid, probablyOffer(P).
 number(0, "offer") :- notBid.
+
+:~ notBid. [1@1]
