@@ -1,5 +1,4 @@
 % property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, arrayIndex).
-% player(name, position, money, jail, bidding, index)
 % number(value, "whoAmI"), my index
 % number(value, "limit")
 
@@ -60,7 +59,7 @@ doTrade :- tradeMoney(_,_,_,_).
 doTrade :- tradeProperty(_,_,_).
 :- booleanValue("true"), not doTrade.
 
-% tra dare soldi e dare proprietà preferiamo dare soldi. Ovviamente, cerchiamo di ottenere più proprietà possibili
+% tra dare soldi e dare proprietà preferiamo dare soldi. Principalmente, cerchiamo di ottenere più proprietà possibili
 :~ notTrade(P). [1@3, P]
 :~ propertyCounterPart(X,_). [1@2, X]
 :~ tradeMoney(P,_,_,_). [1@1, P]

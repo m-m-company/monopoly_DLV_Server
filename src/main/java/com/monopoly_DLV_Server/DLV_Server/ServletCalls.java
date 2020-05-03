@@ -86,7 +86,7 @@ public class ServletCalls {
         }
         properties.removeAll(myProperties);
         ArrayList<Object> facts = new ArrayList<>(myProperties);
-        facts.add(mySelf);
+        //facts.add(mySelf);
         facts.add(new Number(whoAmI, "whoAmI"));
         facts.add(new Number((int) (((Player) mySelf).getMoney() * 0.6), "limit"));
         players.sort(Comparator.comparingInt(player -> ((Player) player).getMoney()));
@@ -129,7 +129,6 @@ public class ServletCalls {
             if (trade.equals("\"true\"")) {
                 return new Trade(whoAmI, ((Player) player).getIndex(), money, propertyOffered, propertyRequested, 0, 0);
             }
-            facts.remove(player);
             facts.removeAll(propertiesInvolved);
         }
         return new Trade();
