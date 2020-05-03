@@ -9,6 +9,7 @@ import com.monopoly_DLV_Server.DLV_Server.DTO.proposeTradeOutput.TradeProperty;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +22,7 @@ import java.util.Map;
 @Slf4j
 public class ServletCalls {
 
-    @GetMapping(value = "/buyOrNotBuy")
+    @PostMapping(value = "/buyOrNotBuy")
     public Boolean buyOrNotBuy(String playerJson, String propertyJson, Integer numberOfTheSameGroup) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (playerJson == null || propertyJson == null || numberOfTheSameGroup == null)
             return null;
@@ -44,7 +45,7 @@ public class ServletCalls {
         return false;
     }
 
-    @GetMapping(value = "/manage")
+    @PostMapping(value = "/manage")
     public ArrayList<BuyHouse> manage(String propertiesJson, String playerJson) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         Player player = (Player) JsonConverter.getInstance().getObject(playerJson, Player.class);
@@ -65,7 +66,7 @@ public class ServletCalls {
         return as;
     }
 
-    @GetMapping(value = "/proposeTrade")
+    @PostMapping(value = "/proposeTrade")
     public Trade proposeTrade(Integer whoAmI, String propertiesJson, String playersJson) {
         ArrayList<Object> properties = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersJson, Player.class);
@@ -86,7 +87,6 @@ public class ServletCalls {
         }
         properties.removeAll(myProperties);
         ArrayList<Object> facts = new ArrayList<>(myProperties);
-        //facts.add(mySelf);
         facts.add(new Number(whoAmI, "whoAmI"));
         facts.add(new Number((int) (((Player) mySelf).getMoney() * 0.6), "limit"));
         players.sort(Comparator.comparingInt(player -> ((Player) player).getMoney()));
@@ -134,7 +134,7 @@ public class ServletCalls {
         return new Trade();
     }
 
-    @GetMapping(value = "/acceptTrade")
+    @PostMapping(value = "/acceptTrade")
     public Boolean acceptTrade(Integer money, String myPropertiesJson, String propertiesTradeJson, Integer owner,
                                Integer communityChestJailCard, Integer chanceJailCard) {
         ArrayList<Object> facts = new ArrayList<>();
@@ -162,7 +162,7 @@ public class ServletCalls {
         return positive > negative;
     }
 
-    @GetMapping(value = "/unmortgage")
+    @PostMapping(value = "/unmortgage")
     public ArrayList<Integer> unmortgage(String propertiesJson, Integer money) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(new Number(money, "actualMoney"));
@@ -182,7 +182,7 @@ public class ServletCalls {
         return null;
     }
 
-    @GetMapping(value = "/payDebt")
+    @PostMapping(value = "/payDebt")
     public ArrayList<ActionProperty> payDebt(String propertiesJson, Integer actualMoney) {
         ArrayList<ActionProperty> actionProperties = new ArrayList<>();
         if (propertiesJson == null || actualMoney == null)
@@ -190,7 +190,6 @@ public class ServletCalls {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
         facts.add(new Number(actualMoney * -1, "moneyToReach"));
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "payDebt.dlv");
-        System.out.println(answerSets.toString());
         for (AnswerSet answerSet : answerSets) {
             try {
                 for (Object o : answerSet.getAtoms()) {
@@ -205,7 +204,7 @@ public class ServletCalls {
         return actionProperties;
     }
 
-    @GetMapping(value = "/auction")
+    @PostMapping(value = "/auction")
     public Integer auction(String playersArrayJson, String propertiesJson, Integer propertyIndex, Integer highestBid,
                            Integer whoAmI, Integer numberOfTheSameGroup) {
         ArrayList<Object> players = JsonConverter.getInstance().getArray(playersArrayJson, Player.class);
@@ -233,14 +232,12 @@ public class ServletCalls {
         facts.add(sg);
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "bid.dlv");
         Number bestOffer = new Number(0, "\"offer\"");
-        log.info(answerSets.toString());
         for (AnswerSet a : answerSets) {
             try {
                 for (Object o : a.getAtoms()) {
                     if (o instanceof Number) {
                         if (((Number) o).semantic.equals("\"offer\"")) {
                             if (((Number) o).getNumber() > bestOffer.getNumber()) {
-                                log.info(String.valueOf(((Number) o).getNumber()));
                                 bestOffer = (Number) o;
                             }
                         }

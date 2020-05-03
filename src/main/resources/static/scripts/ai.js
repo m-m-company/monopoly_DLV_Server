@@ -219,7 +219,7 @@ function AIDlv2(p) {
     this.buyProperty = function (index) {
         let returnValue = false;
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: '/buyOrNotBuy',
             data: {
                 playerJson: JSON.stringify(p),
@@ -252,7 +252,7 @@ function AIDlv2(p) {
         propertiesTrade.length === 0 ? propertiesTradeJson = "empty" : propertiesTradeJson = JSON.stringify(propertiesTrade);
         let returnValue = true;
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/acceptTrade",
             data: {
                 money: tradeObj.getMoney(),
@@ -274,7 +274,7 @@ function AIDlv2(p) {
     // Return: boolean: Must return true if and only if the AI proposed a trade.
     this.beforeTurn = function () {
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/manage",
             data: {
                 propertiesJson: JSON.stringify(getProperties(turn)),
@@ -290,7 +290,7 @@ function AIDlv2(p) {
             async: false
         });
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/unmortgage",
             data: {
                 propertiesJson: JSON.stringify(getProperties(turn)),
@@ -311,7 +311,7 @@ function AIDlv2(p) {
     this.onLand = function () {
         let returnValue = false;
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/proposeTrade",
             data: {
                 whoAmI: turn,
@@ -320,31 +320,33 @@ function AIDlv2(p) {
             },
             success: function (data) {
                 if (data.recipient !== 0) {
-                    console.log(data);
+                    //è una delle cose più stupide che abbia mai scritto, ma l'abbiamo trovato così
+                    let propertiesInterested = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    propertiesInterested[data.propertyOffered] = 1;
+                    propertiesInterested[data.propertyRequested] = -1;
+                    let trade = new Trade(player[data.initiator], player[data.recipient], data.money, propertiesInterested, data.communityChestJailCard, data.chanceJailCard);
+                    game.trade(trade);
+                    returnValue = true;
                 }
             },
             async: false
         });
         return returnValue;
-    }; //TODO: testare
+    }; //DONE
 
     // Determine whether to post bail/use get out of jail free card (if in possession).
     // Return: boolean: true to post bail/use card.
     this.postBail = function () {
 
         // p.jailroll === 2 on third turn in jail.
-        if ((p.communityChestJailCard || p.chanceJailCard) && p.jailroll === 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return (p.communityChestJailCard || p.chanceJailCard) && p.jailroll === 2;
     };
 
     // Mortgage enough properties to pay debt.
     // Return: void: don't return anything, just call the functions mortgage()/sellhouse()
     this.payDebt = function () {
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: '/payDebt',
             data: {
                 propertiesJson: JSON.stringify(getProperties(turn)),
@@ -378,7 +380,7 @@ function AIDlv2(p) {
         });
         properties.push(square[property]);
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/auction",
             data: {
                 playersArrayJson: JSON.stringify(players),
