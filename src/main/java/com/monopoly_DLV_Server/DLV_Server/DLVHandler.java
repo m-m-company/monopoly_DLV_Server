@@ -60,7 +60,6 @@ public class DLVHandler {
         ASPMapper.getInstance().registerClass(PropertyTrade.class);
         ASPMapper.getInstance().registerClass(Number.class);
         ASPMapper.getInstance().registerClass(BooleanValue.class);
-        ASPMapper.getInstance().registerClass(BuyHouse.class);
         ASPMapper.getInstance().registerClass(Unmortgage.class);
         ASPMapper.getInstance().registerClass(ActionProperty.class);
         ASPMapper.getInstance().registerClass(PropertyCounterPart.class);

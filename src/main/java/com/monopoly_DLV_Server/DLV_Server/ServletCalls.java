@@ -46,18 +46,25 @@ public class ServletCalls {
     }
 
     @PostMapping(value = "/manage")
-    public ArrayList<BuyHouse> manage(String propertiesJson, String playerJson) {
+    public ArrayList<BuyHouse> manage(String propertiesJson, Double money) {
         ArrayList<Object> facts = JsonConverter.getInstance().getArray(propertiesJson, Property.class);
-        Player player = (Player) JsonConverter.getInstance().getObject(playerJson, Player.class);
-        Number limit = new Number((int) (player.getMoney() * 0.3), "limit");
+        Number limit = new Number(money.intValue(), "limit");
         facts.add(limit);
         ArrayList<BuyHouse> as = new ArrayList<>();
         List<AnswerSet> answerSets = DLVHandler.getInstance().startGuess(facts, "manage.dlv");
         for (AnswerSet a : answerSets) {
             try {
                 for (Object o : a.getAtoms()) {
-                    if (o instanceof BuyHouse)
-                        as.add((BuyHouse) o);
+                    if (o instanceof Number){
+                        if (((Number) o).semantic.equals("\"a\"")){
+                            BuyHouse buyHouse = new BuyHouse(((Number) o).number, 1);
+                            if (as.contains(buyHouse)) {
+                                as.get(as.indexOf(buyHouse)).setTimes(as.get(as.indexOf(buyHouse)).getTimes() + 1);
+                            } else {
+                                as.add(buyHouse);
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

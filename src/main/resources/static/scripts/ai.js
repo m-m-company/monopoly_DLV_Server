@@ -273,22 +273,30 @@ function AIDlv2(p) {
     // This function is called at the beginning of the AI's turn, before any dice are rolled. The purpose is to allow the AI to manage property and/or initiate trades.
     // Return: boolean: Must return true if and only if the AI proposed a trade.
     this.beforeTurn = function () {
-        $.ajax({
-            type: "POST",
-            url: "/manage",
-            data: {
-                propertiesJson: JSON.stringify(getProperties(turn)),
-                playerJson: JSON.stringify(p)
-            },
-            success: (data) => {
-                data.map(house => {
-                    for (let i = 0; i < house.times; ++i) {
-                        buyHouse(house.index);
+        let hasBought = true;
+        let moneyToSpent = p.money * 0.3;
+        let moneySpent = 0;
+        while (hasBought) {
+            console.log(moneyToSpent);
+            $.ajax({
+                type: "POST",
+                url: "/manage",
+                data: {
+                    propertiesJson: JSON.stringify(getProperties(turn)),
+                    money: moneyToSpent - moneySpent
+                },
+                success: (data) => {
+                    if (data.length === 0) {
+                        hasBought = false;
                     }
-                })
-            },
-            async: false
-        });
+                    data.map(house => {
+                        moneySpent += square[index].houseprice;
+                        buyHouse(house.index);
+                    })
+                },
+                async: false
+            });
+        }
         $.ajax({
             type: "POST",
             url: "/unmortgage",

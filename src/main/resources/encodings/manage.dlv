@@ -25,15 +25,16 @@ groupHousePrice(9,200).
 groupHousePrice(10,200).
 spentMoney(0).
 
+% definisco il limite massimo di soldi da poter spendere
 limitMoney(MONEY) :- number(MONEY,"limit").
 
+% considero sole i gruppi sui quali posso piazzare delle case, cioè i gruppi completi
 canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,_,_,_,_,GROUP,_,_,P)} = NUMBER, GROUP != 1, GROUP != 2.
 
-groupLevel(GROUP,LEVEL) :- canBuyHouse(GROUP), #min{HOUSE: property(_,_,_,HOUSE,_,GROUP,_,_,_)} = LEVEL. 
-groupLevel(GROUP,LEVEL) :- buyHouse(PROP, L), property(_,_,_,HOUSE,_,GROUP,_,_,PROP), groupLevel(GROUP, L), LEVEL = L + 1, LEVEL < 5.
-buyHouse(PROP,LEVEL) | notBuyHouse(PROP,LEVEL) :- property(_,_,_,HOUSE,_,GROUP,_,_,PROP), canBuyHouse(GROUP), groupLevel(GROUP,LEVEL), HOUSE < 5, HOUSE = LEVEL.
-buyHouse(PROP,LEVEL) | notBuyHouse(PROP, LEVEL) :- buyHouse(PROP,OLD), property(_,_,_,_,_,GROUP,_,_,PROP), groupLevel(GROUP,OLD), OLD < 5, OLD + 1 = LEVEL.
-spentMoney(MONEY) :- #sum{X, PROP, LEV: buyHouse(PROP,LEV), property(_,_,_,_,_,G,_,_,PROP), groupHousePrice(G, X)} = MONEY.
-%:- notBuyHouse(PROP, LEVEL), buyHouse(_, Y), LEVEL + 1 = Y.
+% mi calcolo (aggiornando il valore) il livello attuale del gruppo sul quale posso piazzare case
+groupLevel(GROUP,LEVEL) :- canBuyHouse(GROUP), #min{HOUSE: property(_,_,_,HOUSE,_,GROUP,_,_,_)} = LEVEL.
+
+number(PROP, "a") | notBuyHouse(PROP) :- property(_,_,_,HOUSE,_,GROUP,_,_,PROP), groupLevel(GROUP,LEVEL), HOUSE < 5, HOUSE = LEVEL.
+spentMoney(MONEY) :- #sum{X, PROP: number(PROP, "a"), property(_,_,_,_,_,G,_,_,PROP), groupHousePrice(G, X)} = MONEY.
 :- limitMoney(MONEY), #max{SPENT: spentMoney(SPENT)} = SPENTMONEY, MONEY < SPENTMONEY.
-:~ notBuyHouse(PROP,_). [1@1, PROP]
+:~ notBuyHouse(PROP). [1@1, PROP]
