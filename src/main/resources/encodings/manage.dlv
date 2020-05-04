@@ -27,7 +27,7 @@ spentMoney(0).
 
 limitMoney(MONEY) :- number(MONEY,"limit").
 
-canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,_,_,_,_,GROUP,_,_,P)} = NUMBER.
+canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,_,_,_,_,GROUP,_,_,P)} = NUMBER, GROUP != 1, GROUP != 2.
 
 groupLevel(GROUP,LEVEL) :- canBuyHouse(GROUP), #min{HOUSE: property(_,_,_,HOUSE,_,GROUP,_,_,_)} = LEVEL. 
 groupLevel(GROUP,LEVEL) :- buyHouse(PROP, L), property(_,_,_,HOUSE,_,GROUP,_,_,PROP), groupLevel(GROUP, L), LEVEL = L + 1, LEVEL < 5.
