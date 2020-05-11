@@ -8,26 +8,27 @@ The whole front-end code is forked from https://github.com/intrepidcoder/monopol
 In the front-end we worked only on the ai.js file. 
 
 This is project is built for educational-only purpose as part of the Artificial Intelligence exam at [UniCal Department of Mathematics and Computer Science](https://www.mat.unical.it/demacs).
-#Build
+
+# Build
 
 First of all clone this repository in your preferred folder.
 
 Put your dlv2 executable in the `src/main/resources/libs` folder. 
 
-###Please, rename the executable "dlv2". _This is important_.
+### Please, rename the executable "dlv2". _This is important_.
 
 Execute `mvn clean install` in the root directory (where the pom.xml file is).
 
-#Run
+# Run
 
 Just run `mvn spring-boot:run` in the root directory.
 
 Your server is running on `localhost:8080`.
 
-###Enjoy!
+### Enjoy!
 
 
-#How it works
+# How it works
 
 We used Synchronous AJAX (jQuery) calls to communicate with the server the state of the game.
 
@@ -43,5 +44,5 @@ method that receive a `java.util.Collection` of objects as facts and the name of
 
 In the end, all the other methods of EmbASP (that we needed) are reduced to template code.
 
-####Contributors
+#### Contributors
 [Matteo Notaro](https://github.com/MattNot) & [Matteo Loria](https://github.com/MatteoLoria/)
