@@ -50,7 +50,7 @@ public class DLVHandler {
             StringBuilder path = new StringBuilder(new File(".").getAbsolutePath());
             path.deleteCharAt(path.indexOf("."));
             pathToExe = path + File.separator + "src" + File.separator + "main" +
-                    File.separator + "resources" + File.separator + "libs" + File.separator + "dlv2.win.x64_5";
+                    File.separator + "resources" + File.separator + "libs" + File.separator + "dlv2";
         }
     }
 
