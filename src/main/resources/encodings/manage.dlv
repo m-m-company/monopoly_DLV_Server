@@ -34,6 +34,7 @@ canBuyHouse(GROUP) :- groupNumberOfProperty(GROUP,NUMBER), #count{P: property(_,
 % mi calcolo (aggiornando il valore) il livello attuale del gruppo sul quale posso piazzare case
 groupLevel(GROUP,LEVEL) :- canBuyHouse(GROUP), #min{HOUSE: property(_,_,_,HOUSE,_,GROUP,_,_,_)} = LEVEL.
 
+% non c'è bisogno di ricalcolare il group level poichè programma verrà rieseguito
 number(PROP, "a") | notBuyHouse(PROP) :- property(_,_,_,HOUSE,_,GROUP,_,_,PROP), groupLevel(GROUP,LEVEL), HOUSE < 5, HOUSE = LEVEL.
 spentMoney(MONEY) :- #sum{X, PROP: number(PROP, "a"), property(_,_,_,_,_,G,_,_,PROP), groupHousePrice(G, X)} = MONEY.
 :- limitMoney(MONEY), #max{SPENT: spentMoney(SPENT)} = SPENTMONEY, MONEY < SPENTMONEY.

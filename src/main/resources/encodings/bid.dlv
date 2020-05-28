@@ -2,30 +2,9 @@
 % player(name, position, money, jail, bidding, index)
 % number(value, "propertyIndex")
 % number(value, "highestBid")
-% number(value, "mySelf"), my index
-% number(value, "sameGroup") how many prop of the same group I have
-% number(value, "limit") limite di soldi da poter spendere
-% output: number(value, "offer")
-
-
-%property("name", -1, "false", 0, 0, 1, 200, 0, 0).
-%number(0, "propertyIndex").
-%property("name", 1, "false", 0, 0, 1, 200, 0, 1).
-%number(150, "highestBid").
-%number(0, "mySelf").
-%number(2, "sameGroup").
-%number(300, "limit").
-%player("name", 0, 500, "false","true", 0).
-%player("name", 0, 500, "false","true", 1).
-
-
-% property(name, owner, mortgage, house, hotel, groupNumber, price, baserent, index)
-% player(name, position, money, jail, bidding, index)
-% number(value, "propertyIndex")
-% number(value, "highestBid")
-% number(value, "mySelf"), my index
-% number(value, "sameGroup") how many prop of the same group I have
-% number(value, "limit") limite di soldi da poter spendere
+% number(value, "mySelf")
+% number(value, "sameGroup")
+% number(value, "limit")
 % output: number(value, "offer")
 
 preferredGroup(1). preferredGroup(2).
@@ -59,7 +38,7 @@ probablyOffer(O) :- bid, number(L, "limit"), O <= L, number(Bid, "highestBid"), 
 
 
 % offerta finale
-number(P, "offer") :- bid, probablyOffer(P).
+number(P, "offer") :- probablyOffer(P).
 number(0, "offer") :- notBid.
 
 :~ notBid. [1@1]

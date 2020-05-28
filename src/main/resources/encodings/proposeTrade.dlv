@@ -3,8 +3,10 @@
 % number(value, "limit")
 
 % OUTPUT :
-% booleanValue(true o false) se si decide o no di fare unofferta
-% propertyOffer(Price, Property) dentro java sommiamo tutti i price per ottenere la somma finale. Non è stato possibile farlo dentro dlv causa problemi con aggregati ricorsivi
+% propertyOffer(Price, Property) dentro java sommiamo tutti i price per ottenere la somma finale.
+% Non è stato possibile farlo dentro dlv causa problemi con aggregati ricorsivi
+
+% booleanValue(true o false) se si decide o no di fare un'offerta
 % tradeMoney(Property,_,_,_) proprietà richieste per cui si offre denaro
 % tradeProperty(Property,_,_) proprietà richieste per cui si offrono altre proprietà
 % propertyCounterPart(Property,_), proprietà che do in cambio di altre
@@ -43,7 +45,7 @@ propertyOffer(Price, Property) :- tradeMoney(Property,P,"true",G), groupNumberOf
 :- #sum{X,P : propertyOffer(X,P)} = V, number(L,"limit"), V > L.
 
 % calcolo le differenze di prezzo tra le proprietà che sono disposto a cedere e quelle che voglio
-% in modo che posso minimizzare la differenza e offrire quella con il prezzo più vicino
+% in modo da poter minimizzare la differenza e offrire quella con il prezzo più vicino
 difference(A,B,D) :- propertyTradeable(A,P1), tradeProperty(B,P2,"true"), P2/2 > P1, D = P2/2 - P1.
 difference(A,B,D) :- propertyTradeable(A,P1), tradeProperty(B,P2,"false"), P2 > P1, D = P2 - P1.
 difference(A,B,D) :- propertyTradeable(A,P1), tradeProperty(B,P2,"true"), P1 >= P2/2, D = P1 - P2/2.

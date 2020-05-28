@@ -4,10 +4,18 @@
 limitMoney(MONEY) :- number(A, "actualMoney"), MONEY = A/5 . %Max 20% actual
 bestGroup(1). bestGroup(2).
 
+% per ogni proprietà, quante ne posseggo dello stesso gruppo
 sameGroup(PROP, N) :- property(_,_,"true", _,_ ,GROUP, _,_,PROP), #count{P2: property(_,_,_,_,_,GROUP,_,_,P2), P2 != PROP} = N.
+
 unmortgage(PROP) | notUnmortgage(PROP) :- property(_,_,"true",_,_,_,_,_,PROP).
+
+% moltiplichiamo per 6 per poi dividere per 10 (60%)
 adjustedProperty(PRICE,PROP) :- unmortgage(PROP), property(_,_,_,_,_,_,P,_,PROP), PRICE = P*6.
+
+% non è possibile spendere più di quello che si ha
 :- limitMoney(MONEY), MONEY < #sum{P, PROP: adjustedProperty(PRICE,PROP), PRICE/10 = P}.
+
+
 :~ notUnmortgage(PROP), property(_,_,_,_,_,GROUP,_,_,PROP), bestGroup(GROUP). [1@3, PROP]
 :~ notUnmortgage(PROP), sameGroup(PROP, N). [N@2]
 :~ notUnmortgage(PROP). [1@1, PROP]

@@ -134,7 +134,6 @@ public class ServletCalls {
                 }
             }
             if (trade.equals("\"true\"")) {
-                //TODO: Unique on propertyOffered and property
                 return new Trade(whoAmI, ((Player) player).getIndex(), money, propertyOffered, propertyRequested, 0, 0);
             }
             facts.removeAll(propertiesInvolved);
@@ -259,9 +258,4 @@ public class ServletCalls {
         return -1;
     }
 
-    @GetMapping(value = "/postBail")
-    public Boolean postBail() {
-
-        return true;
-    }
 }

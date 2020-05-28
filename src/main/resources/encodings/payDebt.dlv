@@ -63,7 +63,7 @@ sameGroup(P, N) :- property(_,_,"false",_,_,G,_,_,P), #count{PROP: property(_,_,
 % se guadagnamo più di quello che ci serve, paghiamo quella cifra
 :~ number(ACTUAL, "moneyToReach"), #max{MONEY:moneyEarned(MONEY)} = M1, M1 > ACTUAL, DIFF = M1 - ACTUAL. [DIFF@4]
 
-% se vendo case, cerco di mantenere il livello dei gruppi bilanciato, senza però guadagnare troppo
+% se vendo case, cerco di mantenere il livello dei gruppi bilanciato
 levelDifference(0).
 groupOwned(G) :- groupNumberOfProperty(G,N), #count{P : property(_,_,_,_,_,G,_,_,P)} = N.
 groupLevel(GROUP,L) :- groupOwned(GROUP), #min{LEVEL : minLev(P,LEVEL), property(_,_,_,_,_,GROUP,_,_,P)} = L, L < 6.

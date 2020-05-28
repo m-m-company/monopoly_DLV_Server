@@ -5,8 +5,13 @@
 limitMoney(500).
 
 booleanValue(true) | booleanValue(false).
+
+% compro se si tratta dei servizi
 booleanValue(true) :- property(_,_,_,_,_,1,PRICE,_,_), number(MONEY, "actualMoney"), MONEY > PRICE.
 booleanValue(true) :- property(_,_,_,_,_,2,PRICE,_,_), number(MONEY, "actualMoney"), MONEY > PRICE.
+
+% non dovrebbe verificarsi
 :- number(ActualMoney, "actualMoney"), property(_,_,_,_,_,_,Price,_,_), ActualMoney<Price, booleanValue(true).
+
 :- property(_,_,_,_,_,G,_,_,_), limitMoney(Limit), number(ActualMoney, "actualMoney"), ActualMoney < Limit, number(SameColor,"sameGroup"), SameColor < 1, booleanValue(true), G!=1, G!=2.
 :~ booleanValue(false). [1@1]

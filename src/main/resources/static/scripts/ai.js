@@ -305,7 +305,6 @@ function AIDlv2(p) {
                 money: p.money
             },
             success: (data) => {
-                console.log("UNMORTGAGE: " + data);
                 if (data[0] != null)
                     data.forEach(i => unmortgage(i));
             },
